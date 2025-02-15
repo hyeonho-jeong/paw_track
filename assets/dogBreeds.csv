@@ -1,0 +1,288 @@
+Number,Breed,Puppy_Age(Years),Puppy_Walk_Time(Min),Adult_Age(Years),Adult_Walk_Time(Min),Senior_Walk_Time(Min),Overweight_Male(lbs),Overweight_Female(lbs)
+1,American Staffordshire Terrier,1,40,6,60,50,75,70
+2,American Water Spaniel,1,30,7,45,40,45,40
+3,Anatolian Shepherd Dog,2,50,6,90,60,140,120
+4,Appenzeller Sennenhund,1,40,6,60,50,70,65
+5,Australian Cattle Dog,1,30,7,60,50,50,45
+6,Australian Kelpie,1,30,7,50,40,45,40
+7,Australian Shepherd,1,30,7,60,50,65,60
+8,Australian Stumpy Tail Cattle Dog,1,30,7,50,40,45,40
+9,Australian Terrier,1,20,7,40,30,15,12
+10,Azawakh,1,30,7,60,50,55,50
+11,Barbado da Terceira,1,30,6,50,40,45,40
+12,Barbet,1,40,6,60,50,65,60
+13,Basenji,1,25,7,45,35,25,22
+14,Basset Fauve de Bretagne,1,30,7,40,30,35,30
+15,Basset Hound,1,25,7,40,30,65,60
+16,Bavarian Mountain Scent Hound,1,40,7,60,50,65,60
+17,Beagle,1,25,7,45,35,30,28
+18,Bearded Collie,1,40,7,60,50,50,45
+19,Beauceron,1,50,6,90,60,100,90
+20,Bedlington Terrier,1,20,7,40,30,20,18
+21,Belgian Laekenois,1,30,6,60,50,65,60
+22,Belgian Malinois,1,30,6,60,50,65,60
+23,Belgian Sheepdog,1,30,6,60,50,65,60
+24,Belgian Tervuren,1,30,6,60,50,65,60
+25,Bergamasco Sheepdog,1,40,7,60,50,80,70
+26,Berger Picard,1,40,7,60,50,70,65
+27,Bernese Mountain Dog,2,50,6,90,60,120,110
+28,Bichon Frise,1,20,7,30,25,20,15
+29,Biewer Terrier,1,20,7,30,25,10,8
+30,Black and Tan Coonhound,1,40,7,60,50,80,70
+31,Black Russian Terrier,2,50,6,60,50,150,130
+32,Bloodhound,2,50,6,60,50,120,110
+33,Blue Picardy Spaniel,1,40,7,60,50,60,55
+34,Bluetick Coonhound,1,40,7,60,50,70,60
+35,Boerboels,2,50,6,90,60,150,130
+36,Bohemian Shepherd,1,40,7,60,50,80,75
+37,Bolognese,1,20,7,30,25,10,8
+38,Border Collie,1,40,7,60,50,45,40
+39,Border Terrier,1,20,7,40,30,20,18
+40,Borzoi,1,40,7,60,50,90,80
+41,Boston Terrier,1,20,7,30,25,25,22
+42,Bouvier des Ardennes,1,40,7,60,50,85,80
+43,Bouvier des Flandres,1,50,7,90,60,120,110
+44,Boxer,1,40,6,60,50,80,70
+45,Boykin Spaniel,1,30,7,60,50,60,55
+46,Bracco Italiano,1,40,6,60,50,80,70
+47,Braque du Bourbonnais,1,30,6,60,50,55,50
+48,Braque Francais Pyrenean,1,30,6,60,50,50,45
+49,Braque St. Germain,1,30,6,60,50,55,50
+50,Brazilian Terrier,1,20,7,40,30,20,18
+51,Briard,2,50,6,90,60,100,90
+52,Brittany,1,40,7,60,50,50,45
+53,Broholmer,2,50,6,90,60,150,130
+54,Brussels Griffon,1,20,7,30,25,12,10
+55,Bull Terrier,1,40,6,60,50,70,60
+56,Bulldog,1,20,7,40,30,60,50
+57,Bullmastiff,2,50,6,90,60,150,130
+58,Cairn Terrier,1,20,7,40,30,20,18
+59,Canaan Dog,1,40,7,60,50,60,55
+60,Canadian Eskimo Dog,2,50,6,90,60,120,100
+61,Cane Corso,2,50,6,90,60,120,110
+62,Cardigan Welsh Corgi,1,30,7,60,50,45,40
+63,Carolina Dog,1,40,7,60,50,60,55
+64,Catahoula Leopard Dog,1,50,6,90,60,100,90
+65,Caucasian Shepherd Dog,2,60,6,120,80,180,160
+66,Cavalier King Charles Spaniel,1,25,7,45,35,20,18
+67,Central Asian Shepherd Dog,2,60,6,120,80,160,140
+68,Cesky Terrier,1,30,7,50,40,25,22
+69,Chesapeake Bay Retriever,1,40,7,60,50,75,70
+70,Chihuahua,1,20,7,30,25,10,8
+71,Chinese Crested,1,20,7,30,25,12,10
+72,Chinese Shar-Pei,1,40,7,60,50,60,55
+73,Chinook,1,40,7,60,50,70,60
+74,Chow Chow,1,50,7,90,60,85,75
+75,Cirneco dell'Etna,1,30,7,45,35,30,28
+76,Clumber Spaniel,1,40,7,60,50,85,75
+77,Cocker Spaniel,1,30,7,45,35,35,30
+78,Collie,1,40,7,60,50,65,60
+79,Coton de Tulear,1,20,7,30,25,15,12
+80,Croatian Sheepdog,1,40,7,60,50,45,40
+81,Curly-Coated Retriever,2,50,6,90,60,100,90
+82,Czechoslovakian Vlciak,2,50,6,90,60,100,90
+83,Dachshund,1,20,7,30,25,30,28
+84,Dalmatian,1,40,7,60,50,70,60
+85,Dandie Dinmont Terrier,1,20,7,30,25,20,18
+86,Danish-Swedish Farmdog,1,30,7,50,40,35,30
+87,Deutscher Wachtelhund,2,50,6,90,60,100,90
+88,Doberman Pinscher,2,60,6,120,90,120,110
+89,Dogo Argentino,2,60,6,120,90,140,130
+90,Dogue de Bordeaux,2,60,6,120,90,150,130
+91,Drentsche Patrijshond,1,30,7,60,50,70,65
+92,Drever,1,20,7,40,30,35,30
+93,Dutch Shepherd,1,40,7,60,50,70,65
+94,English Cocker Spaniel,1,30,7,45,35,45,40
+95,English Foxhound,1,40,7,60,50,80,70
+96,English Setter,1,30,7,45,35,75,70
+97,English Springer Spaniel,1,30,7,45,35,60,55
+98,English Toy Spaniel,1,20,7,30,25,20,18
+99,Entlebucher Mountain Dog,2,50,6,90,60,100,90
+100,Estrela Mountain Dog,2,60,6,120,90,150,130
+101,Eurasier,1,30,7,45,35,65,60
+102,Field Spaniel,1,30,7,45,35,45,40
+103,Finnish Lapphund,1,30,7,45,35,55,50
+104,Finnish Spitz,1,30,7,45,35,50,45
+105,Flat-Coated Retriever,2,50,6,90,60,90,80
+106,French Bulldog,1,20,7,30,25,30,28
+107,French Spaniel,1,40,7,60,50,65,60
+108,German Longhaired Pointer,2,50,6,90,60,100,90
+109,German Pinscher,1,40,7,60,50,50,45
+110,German Shepherd Dog,2,50,6,90,60,120,110
+111,German Shorthaired Pointer,2,50,6,90,60,100,90
+112,German Spitz,1,30,7,45,35,20,18
+113,German Wirehaired Pointer,2,50,6,90,60,100,90
+114,Giant Schnauzer,2,60,6,120,90,120,110
+115,Glen of Imaal Terrier,1,20,7,30,25,20,18
+116,Golden Retriever,1,40,7,60,50,80,70
+117,Gordon Setter,1,40,7,60,50,80,70
+118,Grand Basset Griffon Vendéen,2,50,6,90,60,100,90
+119,Great Dane,2,60,6,120,90,180,160
+120,Great Pyrenees,2,60,6,120,90,150,130
+121,Greater Swiss Mountain Dog,2,60,6,120,90,150,130
+122,Greyhound,1,40,7,60,50,70,60
+123,Hamiltonstovare,1,40,7,60,50,80,70
+124,Hanoverian Scenthound,2,50,6,90,60,100,90
+125,Harrier,1,40,7,60,50,75,70
+126,Havanese,1,20,7,30,25,20,18
+127,Hokkaido,1,30,7,50,40,50,45
+128,Hovawart,2,50,6,90,60,100,90
+129,Ibizan Hound,1,30,7,45,35,50,45
+130,Icelandic Sheepdog,1,30,7,45,35,45,40
+131,Irish Red and White Setter,1,40,7,60,50,70,60
+132,Irish Setter,1,40,7,60,50,60,55
+133,Irish Terrier,1,30,7,45,35,45,40
+134,Irish Water Spaniel,1,40,7,60,50,150,140
+135,Irish Wolfhound,2,60,6,120,80,120,110
+136,Italian Greyhound,1,20,7,30,25,20,18
+137,Jagdterrier,1,40,7,60,50,50,45
+138,Japanese Akitainu,2,60,6,120,80,120,110
+139,Japanese Chin,1,20,7,30,25,15,12
+140,Japanese Spitz,1,30,7,45,35,25,22
+141,Kai Ken,1,40,7,60,50,50,45
+142,Karelian Bear Dog,1,40,7,60,50,65,60
+143,Keeshond,1,30,7,45,35,45,40
+144,Kerry Blue Terrier,1,30,7,45,35,50,45
+145,Kishu Ken,1,40,7,60,50,50,45
+146,Komondor,2,50,6,90,60,120,110
+147,Korean Jindo Dog,1,40,7,60,50,55,50
+148,Kromfohrlander,1,30,7,45,35,40,35
+149,Kuvasz,2,50,6,90,60,110,100
+150,Labrador Retriever,1,40,7,60,50,80,70
+151,Lagotto Romagnolo,1,40,7,60,50,50,45
+152,Lakeland Terrier,1,30,7,45,35,30,28
+153,Lancashire Heeler,1,30,7,45,35,25,22
+154,Lapponian Herder,1,40,7,60,50,60,55
+155,Large Munsterlander,2,50,6,90,60,100,90
+156,Leonberger,2,60,6,120,90,150,130
+157,Lhasa Apso,1,20,7,30,25,20,18
+158,Löwchen,1,20,7,30,25,20,18
+159,Maltese,1,20,7,30,25,12,10
+160,Manchester Terrier (Standard),1,30,7,45,35,25,22
+161,Manchester Terrier (Toy),1,20,7,30,25,15,12
+162,Mastiff,2,50,6,90,60,150,130
+163,Miniature American Shepherd,1,40,7,60,50,45,40
+164,Miniature Bull Terrier,1,40,7,60,50,45,40
+165,Miniature Pinscher,1,30,7,45,35,30,28
+166,Miniature Schnauzer,1,40,7,60,50,45,40
+167,Mountain Cur,1,40,7,60,50,55,50
+168,Mudi,1,40,7,60,50,45,40
+169,Neapolitan Mastiff,2,60,6,120,90,150,130
+170,Nederlandse Kooikerhondje,1,30,7,60,50,50,45
+171,Newfoundland,2,50,6,90,60,150,130
+172,Norfolk Terrier,1,30,7,45,35,20,18
+173,Norrbottenspets,1,30,7,45,35,25,22
+174,Norwegian Buhund,1,40,7,60,50,55,50
+175,Norwegian Elkhound,1,40,7,60,50,60,55
+176,Norwegian Lundehund,1,30,7,45,35,25,22
+177,Norwich Terrier,1,30,7,45,35,20,18
+178,Nova Scotia Duck Tolling Retriever,1,40,7,60,50,50,45
+179,Old English Sheepdog,2,50,6,90,60,120,110
+180,Otterhound,2,50,6,90,60,100,90
+181,Papillon,1,20,7,30,25,15,12
+182,Parson Russell Terrier,1,30,7,45,35,25,22
+183,Pekingese,1,20,7,30,25,12,10
+184,Pembroke Welsh Corgi,1,30,7,45,35,30,28
+185,Peruvian Inca Orchid,1,20,7,30,25,15,12
+186,Petit Basset Griffon Vendéen,1,30,7,45,35,30,28
+187,Pharaoh Hound,1,40,7,60,50,50,45
+188,Plott Hound,1,40,7,60,50,70,60
+189,Pointer,2,50,6,90,60,100,90
+190,Polish Lowland Sheepdog,1,30,7,45,35,50,45
+191,Pomeranian,1,20,7,30,25,10,8
+192,Pont-Audemer Spaniel,2,50,6,90,60,60,55
+193,Poodle (Miniature),1,30,7,45,35,30,28
+194,Poodle (Standard),2,50,6,90,60,60,55
+195,Poodle (Toy),1,20,7,30,25,15,12
+196,Porcelaine,1,30,7,45,35,30,28
+197,Portuguese Podengo,1,30,7,45,35,30,28
+198,Portuguese Podengo Pequeno,1,30,7,45,35,30,28
+199,Portuguese Pointer,2,50,6,90,60,100,90
+200,Portuguese Sheepdog,1,30,7,45,35,50,45
+201,Portuguese Water Dog,2,50,6,90,60,100,90
+202,Presa Canario,2,60,6,90,60,150,130
+203,Pudelpointer,2,50,6,90,60,100,90
+204,Pug,1,20,7,30,25,20,18
+205,Puli,1,30,7,45,35,30,28
+206,Pumi,1,30,7,45,35,30,28
+207,Pyrenean Mountain Dog,2,60,6,120,90,150,130
+208,Pyrenean Shepherd,1,30,7,45,35,50,45
+209,Rafeiro do Alentejo,2,60,6,120,90,140,120
+210,Rat Terrier,1,30,7,45,35,25,22
+211,Redbone Coonhound,1,40,7,60,50,70,60
+212,Rhodesian Ridgeback,2,60,6,120,90,150,140
+213,Romanian Carpathian Shepherd,2,60,6,120,90,140,120
+214,Rottweiler,2,60,6,90,60,120,110
+215,Russell Terrier,1,30,7,45,35,25,22
+216,Russian Toy,1,20,7,30,25,10,8
+217,Russkaya Tsvetnaya Bolonka,1,20,7,30,25,10,8
+218,Saint Bernard,2,50,6,90,60,150,130
+219,Saluki,1,30,7,45,35,50,45
+220,Samoyed,1,40,7,60,50,70,60
+221,Schapendoes,1,30,7,45,35,60,50
+222,Schipperke,1,30,7,45,35,25,22
+223,Scottish Deerhound,2,50,6,90,60,100,90
+224,Scottish Terrier,1,30,7,45,35,20,18
+225,Sealyham Terrier,1,30,7,45,35,20,18
+226,Segugio Italiano,1,30,7,45,35,60,50
+227,Shetland Sheepdog,1,30,7,45,35,40,35
+228,Shiba Inu,1,20,7,30,25,25,22
+229,Shih Tzu,1,20,7,30,25,20,18
+230,Shikoku,1,30,7,45,35,50,45
+231,Siberian Husky,1,40,7,60,50,60,55
+232,Skye Terrier,1,30,7,45,35,25,22
+233,Sloughi,1,40,7,60,50,50,45
+234,Slovakian Wirehaired Pointer,2,50,6,90,60,100,90
+235,Sovensky Cuvac,2,50,6,90,60,110,100
+236,Slovensky Kopov,1,30,7,45,35,45,40
+237,Small Munsterlander,2,50,6,90,60,100,90
+238,Smooth Fox Terrier,1,30,7,45,35,25,22
+239,Soft Coated Wheaten Terrier,1,30,7,45,35,50,45
+240,Spanish Mastiff,2,50,6,90,60,150,130
+241,Spanish Water Dog,1,30,7,45,35,45,40
+242,Spinone Italiano,2,50,6,90,60,100,90
+243,Stabyhouns,1,30,7,45,35,45,40
+244,Staffordshire Bull Terrier,1,30,7,45,35,40,35
+245,Standard Schnauzer,2,50,6,90,60,100,90
+246,Sussex Spaniel,1,30,7,45,35,35,30
+247,Swedish Lapphund,1,30,7,45,35,40,35
+248,Swedish Vallhund,1,30,7,45,35,40,35
+249,Taiwan Dog,1,30,7,45,35,40,35
+250,Teddy Roosevelt Terrier,1,30,7,45,35,25,22
+251,Spanish Mastiff,2,50,6,90,60,150,130
+252,Spanish Water Dog,1,30,7,45,35,45,40
+253,Spinone Italiano,2,50,6,90,60,100,90
+254,Stabyhouns,1,30,7,45,35,45,40
+255,Staffordshire Bull Terrier,1,30,7,45,35,40,35
+256,Standard Schnauzer,2,50,6,90,60,100,90
+257,Sussex Spaniel,1,30,7,45,35,35,30
+258,Swedish Lapphund,1,30,7,45,35,40,35
+259,Swedish Vallhund,1,30,7,45,35,40,35
+260,Taiwan Dog,1,30,7,45,35,40,35
+261,Teddy Roosevelt Terrier,1,30,7,45,35,25,22
+262,Thai Bangkaew Dog,1,30,7,45,35,35,30
+263,Thai Ridgeback,1,30,7,45,35,50,45
+264,Tibetan Mastiff,2,50,6,90,60,150,130
+265,Tibetan Spaniel,1,30,7,45,35,25,22
+266,Tibetan Terrier,1,30,7,45,35,40,35
+267,Tornjak,2,50,6,90,60,150,130
+268,Tosa,2,50,6,90,60,150,130
+269,Toy Fox Terrier,1,30,7,45,35,25,22
+270,Transylvanian Hound,2,50,6,90,60,100,90
+271,Treeing Tennessee Brindle,1,30,7,45,35,45,40
+272,Treeing Walker Coonhound,1,30,7,45,35,40,35
+273,Vizsla,2,50,6,90,60,100,90
+274,Volpino Italiano,1,30,7,45,35,25,22
+275,Weimaraner,2,50,6,90,60,100,90
+276,Welsh Springer Spaniel,1,30,7,45,35,40,35
+277,Welsh Terrier,1,30,7,45,35,35,30
+278,West Highland White Terrier,1,30,7,45,35,40,35
+279,Wetterhoun,2,50,6,90,60,100,90
+280,Whippet,1,30,7,45,35,40,35
+281,Wire Fox Terrier,1,30,7,45,35,25,22
+282,Wirehaired Pointing Griffon,2,50,6,90,60,100,90
+283,Wirehaired Vizsla,1,30,7,45,35,25,22
+284,Working Kelpie,1,30,7,45,35,40,35
+285,Xoloitzcuintli,1,30,7,45,35,45,40
+286,Yakutian Laika,1,30,7,45,35,45,40
+287,Yorkshire Terrier,1,20,7,30,25,15,12
