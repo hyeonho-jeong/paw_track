@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { Pedometer } from "expo-sensors";
 
-const StepCounter = () => {
+const StepCounter = ({ onStepsUpdate }) => {  
   const [pedometerAvailable, setPedometerAvailable] = useState(false);
   const [stepCount, setStepCount] = useState(0);
 
@@ -16,7 +16,14 @@ const StepCounter = () => {
 
         if (isAvailable) {
           subscription = Pedometer.watchStepCount((result) => {
-            setStepCount(result.steps);
+            console.log("📢 걸음 수 업데이트:", result.steps); // ✅ 로그 추가
+            setStepCount((prevSteps) => {
+              const updatedSteps = prevSteps + result.steps; // ✅ 걸음 수 누적 업데이트
+              if (onStepsUpdate) {
+                onStepsUpdate(updatedSteps);  // ✅ 걸음 수 업데이트 전달
+              }
+              return updatedSteps;
+            });
           });
         }
       } catch (error) {
@@ -34,8 +41,19 @@ const StepCounter = () => {
     };
   }, []);
 
+  // ✅ 걸음 수가 변경될 때마다 onStepsUpdate 호출
+  useEffect(() => {
+    if (onStepsUpdate) {
+      console.log("📢 걸음 수 업데이트 호출됨:", stepCount);
+      onStepsUpdate(stepCount);
+    }
+  }, [stepCount]);
+
   const resetStepCount = () => {
     setStepCount(0);
+    if (onStepsUpdate) {
+      onStepsUpdate(0);  
+    }
   };
 
   return (

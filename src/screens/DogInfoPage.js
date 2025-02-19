@@ -1,34 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Image, StyleSheet, Alert, FlatList } from "react-native";
-import { AuthContext } from "../../AuthContext";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebase";
+import React from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
 
 // ✅ JSON 파일에서 강아지 품종 정보 불러오기
 const dogBreeds = require("../../assets/dogBreeds.json");
 
-const DogInfoPage = () => {
-  const { user } = useContext(AuthContext);
-  const [dogInfo, setDogInfo] = useState([]);
-
-  useEffect(() => {
-    if (!user) {
-      Alert.alert("Error", "No user is signed in.");
-      return; // ✅ 로그인되지 않은 경우 실행 중단
-    }
-
-    const dogsCollectionRef = collection(db, "users", user.uid, "dogs");
-
-    const unsubscribe = onSnapshot(dogsCollectionRef, (querySnapshot) => {
-      const dogs = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setDogInfo(dogs);
-    });
-
-    return () => unsubscribe();
-  }, [user]);
+const DogInfoPage = ({ dogInfo }) => {
+  if (!dogInfo) {
+    return <Text style={styles.text}>강아지 정보가 없습니다.</Text>;
+  }
 
   const getWeightStatus = (dog) => {
     if (!dog.breed) return "Unknown";
@@ -52,22 +31,12 @@ const DogInfoPage = () => {
 
   return (
     <View style={styles.container}>
-      {dogInfo.length > 0 ? (
-        <FlatList
-          data={dogInfo}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              {item.image && <Image source={{ uri: item.image }} style={styles.dogImage} />}
-              <Text style={styles.text}>Name: {item.name}</Text>
-              <Text style={styles.text}>Breed: {item.breed}</Text>
-              <Text style={styles.text}>Weight Status: {getWeightStatus(item)}</Text>
-            </View>
-          )}
-        />
-      ) : (
-        <Text style={styles.text}>No dog information saved.</Text>
-      )}
+      <View style={styles.card}>
+        {dogInfo.image && <Image source={{ uri: dogInfo.image }} style={styles.dogImage} />}
+        <Text style={styles.text}>Name: {dogInfo.name}</Text>
+        <Text style={styles.text}>Breed: {dogInfo.breed}</Text>
+        <Text style={styles.text}>Weight Status: {getWeightStatus(dogInfo)}</Text>
+      </View>
     </View>
   );
 };

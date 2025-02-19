@@ -7,25 +7,28 @@ import HeaderButtons from "../components/HeaderButtons";
 
 const RightPage = ({ navigation }) => {
   return (
-    <KeyboardAvoidingView 
-      style={{ flex: 1 }} 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.outerContainer}>
-          {/* ✅ 항상 우측 상단에 위치하도록 HeaderButtons 포함 */}
-          <View style={styles.headerContainer}>
-            <HeaderButtons navigation={navigation} />
-          </View>
+    <View style={styles.outerContainer}>
+      {/* ✅ 항상 우측 상단에 위치하도록 HeaderButtons 포함 */}
+      <View style={styles.headerContainer}>
+        <HeaderButtons navigation={navigation} />
+      </View>
 
-          <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }} 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer} 
+          keyboardShouldPersistTaps="handled"
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
               {/* 추가 컨텐츠를 위한 공간 확보 */}
             </View>
-          </ScrollView>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 

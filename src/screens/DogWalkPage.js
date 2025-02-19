@@ -1,45 +1,26 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { View, Text, Button, StyleSheet, Alert } from "react-native";
-import { AuthContext } from "../../AuthContext";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebase";
+import React, { useState, useRef } from "react";
+import { View, Text, Button, StyleSheet } from "react-native";
 
 // ✅ JSON 파일에서 강아지 산책 정보 불러오기
 const dogBreeds = require("../../assets/dogBreeds.json");
 
-const DogWalkPage = () => {
-  const { user } = useContext(AuthContext);
-  const [dogInfo, setDogInfo] = useState([]);
-  const [timers, setTimers] = useState({});
-  const timerRefs = useRef({});
+const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const timerRef = useRef(null);
 
-  useEffect(() => {
-    if (!user) {
-      Alert.alert("Error", "No user is signed in.");
-      return; // ✅ 실행 중단
-    }
+  if (!dogInfo) {
+    return <Text style={styles.text}>강아지 정보가 없습니다.</Text>;
+  }
 
-    const dogsCollectionRef = collection(db, "users", user.uid, "dogs");
-
-    const unsubscribe = onSnapshot(dogsCollectionRef, (querySnapshot) => {
-      const dogs = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setDogInfo(dogs);
-    });
-
-    return () => unsubscribe(); // ✅ Firestore 리스너 해제
-  }, [user]);
-
-  const getWalkTime = (dog) => {
+  const getWalkTime = () => {
     const breedData = dogBreeds.find(
-      (item) => item.Breed.toLowerCase() === dog.breed.toLowerCase()
+      (item) => item.Breed.toLowerCase() === dogInfo.breed.toLowerCase()
     );
 
     if (!breedData) return "Unknown";
 
-    const age = Number(dog.age);
+    const age = Number(dogInfo.age);
     if (age < Number(breedData.Puppy_Age)) {
       return Number(breedData["Puppy_Walk_Time(Min)"]);
     } else if (age <= Number(breedData.Adult_Age)) {
@@ -49,50 +30,31 @@ const DogWalkPage = () => {
     }
   };
 
-  const toggleTimer = (dogId) => {
-    setTimers((prevTimers) => {
-      const isRunning = !!prevTimers[dogId];
-
-      if (isRunning) {
-        clearInterval(timerRefs.current[dogId]);
-        return { ...prevTimers, [dogId]: 0 };
-      } else {
-        const startTime = Date.now();
-        timerRefs.current[dogId] = setInterval(() => {
-          setTimers((prev) => ({
-            ...prev,
-            [dogId]: Math.floor((Date.now() - startTime) / 1000),
-          }));
-        }, 1000);
-        return { ...prevTimers, [dogId]: 1 }; // ✅ 타이머 실행 중 표시
-      }
-    });
+  const toggleTimer = () => {
+    if (isRunning) {
+      clearInterval(timerRef.current);
+      setIsRunning(false);
+    } else {
+      const startTime = Date.now() - elapsedTime * 1000;
+      timerRef.current = setInterval(() => {
+        const newElapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        setElapsedTime(newElapsedTime);
+        onTimeUpdate(newElapsedTime);
+      }, 1000);
+      setIsRunning(true);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {dogInfo.length > 0 ? (
-        dogInfo.map((dog) => {
-          const walkTime = getWalkTime(dog);
-          const elapsedTime = timers[dog.id] || 0;
-
-          return (
-            <View key={dog.id} style={styles.card}>
-              <Text style={styles.text}>Name: {dog.name}</Text>
-              <Text style={styles.text}>Walk Time: {walkTime} min</Text>
-              <Text style={styles.text}>
-                Time Elapsed: {Math.floor(elapsedTime / 60)} min {elapsedTime % 60} sec
-              </Text>
-              <Button
-                title={timers[dog.id] ? "Pause Timer" : "Start Timer"}
-                onPress={() => toggleTimer(dog.id)}
-              />
-            </View>
-          );
-        })
-      ) : (
-        <Text style={styles.text}>No dog information saved.</Text>
-      )}
+      <View style={styles.card}>
+        <Text style={styles.text}>🐾 {dogInfo.name}의 산책 정보</Text>
+        <Text style={styles.text}>권장 산책 시간: {getWalkTime()} 분</Text>
+        <Text style={styles.text}>
+          경과 시간: {Math.floor(elapsedTime / 60)}분 {elapsedTime % 60}초
+        </Text>
+        <Button title={isRunning ? "타이머 중지" : "타이머 시작"} onPress={toggleTimer} />
+      </View>
     </View>
   );
 };
@@ -115,6 +77,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
+    alignItems: "center",
   },
   text: {
     fontSize: 16,
