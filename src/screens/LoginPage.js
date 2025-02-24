@@ -1,6 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { 
+  View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity, 
+  TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, Platform, ActivityIndicator, ScrollView 
+} from 'react-native';
 import { AuthContext } from '../../AuthContext';
+import { auth } from '../../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginPage = ({ navigation }) => {
   const { setIsLoggedIn } = useContext(AuthContext);
@@ -12,69 +17,106 @@ const LoginPage = ({ navigation }) => {
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
-      setError('이메일과 비밀번호를 입력해주세요.');
+      setError('Please enter your email and password.');
       return;
     }
 
     setIsLoading(true);
+    setError(''); // 기존 에러 메시지 초기화
 
     try {
-      // 🔹 실제 인증 없이 로그인 성공 처리
-      setTimeout(() => {
-        setIsLoggedIn(true);
-        setError('');
-        Alert.alert('로그인 성공', '메인 페이지로 이동합니다.');
-        navigation.replace('MainTabs');
-        setIsLoading(false);
-      }, 1000); // 🔹 테스트용 딜레이 (1초)
+      console.log("🚀 Attempting to log in with:", email, password);
+
+      // ✅ Firebase 인증을 통한 로그인 처리
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      const user = userCredential.user;
+
+      console.log("✅ Firebase Login successful! User UID:", user.uid);
+
+      // 로그인 성공 후에만 상태 변경
+      setIsLoggedIn(true);
+      Alert.alert('Login Successful', 'Redirecting to the main page.');
+      navigation.replace('MainTabs'); // ✅ 로그인 성공 시 MainTabs로 이동
     } catch (error) {
-      console.error('Login Error:', error.message);
-      setError('로그인에 실패했습니다. 다시 시도해주세요.');
+      console.error('❌ Login Error:', error.code, error.message);
+
+      let errorMessage = 'Login failed. Please check your email and password.';
+
+      // 🔹 Firebase 오류 코드에 따라 사용자 친화적인 메시지 제공
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email.';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password. Please try again.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Invalid email format.';
+      } else {
+        errorMessage = error.message;
+      }
+
+      setError(errorMessage);
+    } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>로그인</Text>
+    <KeyboardAvoidingView 
+      style={{ flex: 1 }} 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer} 
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.container}>
+            <Text style={styles.title}>Login</Text>
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <TextInput
-        placeholder="이메일"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        textContentType="emailAddress"
-        style={styles.input}
-      />
+            <TextInput
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              style={styles.input}
+            />
 
-      <TextInput
-        placeholder="비밀번호"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        textContentType="password"
-        autoCapitalize="none"
-        style={styles.input}
-      />
+            <TextInput
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              textContentType="password"
+              autoCapitalize="none"
+              style={styles.input}
+            />
 
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#007AFF" />
-      ) : (
-        <Button title="로그인" onPress={handleLogin} />
-      )}
+            {isLoading ? (
+              <ActivityIndicator size="large" color="#007AFF" />
+            ) : (
+              <Button title="Login" onPress={handleLogin} />
+            )}
 
-      <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.signupButton}>
-        <Text style={styles.signupText}>계정이 없으신가요? 회원가입</Text>
-        <Button title="Go to Main" onPress={() => navigation.replace("MainTabs")} />
-      </TouchableOpacity>
-    </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.signupButton}>
+              <Text style={styles.signupText}>Don't have an account? Sign Up</Text>
+            </TouchableOpacity>
+
+            {/* ✅ MainPage로 가는 버튼 추가 */}
+            <TouchableOpacity onPress={() => navigation.navigate('MainTabs')} style={styles.skipButton}>
+              <Text style={styles.skipText}>Skip Login & Go to Main Page</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: { flexGrow: 1 },
   container: {
     padding: 20,
     flex: 1,
@@ -107,6 +149,16 @@ const styles = StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
     fontSize: 16,
+  },
+  skipButton: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  skipText: {
+    color: '#FF4500',
+    textDecorationLine: 'underline',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

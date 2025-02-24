@@ -11,25 +11,22 @@ import HeaderButtons from "../components/HeaderButtons";
 
 const LeftPage = ({ navigation }) => {
   const { user } = useContext(AuthContext);
-  const [selectedDate, setSelectedDate] = useState(""); // ✅ 선택한 날짜 저장
-  const [activityData, setActivityData] = useState([]); // ✅ Firestore에서 불러온 데이터 저장
+  const [selectedDate, setSelectedDate] = useState(""); 
+  const [activityData, setActivityData] = useState([]); 
 
-  // ✅ 날짜 선택 시 Firestore에서 해당 날짜 데이터 가져오기
   const fetchActivityData = async (date) => {
     if (!user) return;
 
-    setActivityData([]); // ✅ 새 날짜를 선택할 때 기존 데이터 초기화
+    setActivityData([]); 
 
     try {
         const userActivityRef = collection(db, "users", user.uid, "activity");
 
-        // ✅ Firestore에 저장된 UTC 시간을 사용하여 필터링
         const selectedUTCDate = new Date(date); 
-        selectedUTCDate.setUTCHours(0, 0, 0, 0); // UTC 00:00:00 설정
+        selectedUTCDate.setUTCHours(0, 0, 0, 0); 
         const nextUTCDate = new Date(selectedUTCDate);
-        nextUTCDate.setUTCDate(nextUTCDate.getUTCDate() + 1); // 다음날 UTC 00:00:00 설정
+        nextUTCDate.setUTCDate(nextUTCDate.getUTCDate() + 1); 
 
-        // ✅ Firestore에서 해당 UTC 날짜에 저장된 데이터만 가져오기
         const q = query(
             userActivityRef, 
             where("timestamp", ">=", selectedUTCDate), 
@@ -38,31 +35,28 @@ const LeftPage = ({ navigation }) => {
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            setActivityData([]); // ✅ 데이터가 없으면 빈 배열 설정
+            setActivityData([]); 
         } else {
             const activities = querySnapshot.docs.map(doc => {
                 const activity = doc.data();
 
-                // ✅ Firestore UTC timestamp → 사용자 현지 시간 변환
                 const localDate = activity.timestamp.toDate().toLocaleDateString(); 
                 const localTime = activity.timestamp.toDate().toLocaleTimeString(); 
 
                 return {
                     id: doc.id,
                     ...activity,
-                    localDate, // ✅ 변환된 날짜
-                    localTime, // ✅ 변환된 시간
+                    localDate, 
+                    localTime, 
                 };
             });
 
             setActivityData(activities);
         }
     } catch (error) {
-        console.error("🚨 Firestore 데이터 가져오기 오류:", error);
+        console.error("🚨 Error fetching Firestore data:", error);
     }
 };
-
-
 
   return (
     <KeyboardAvoidingView 
@@ -72,10 +66,8 @@ const LeftPage = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
           <View style={styles.container}>
-            {/* ✅ 헤더 버튼 추가 */}
             <HeaderButtons navigation={navigation} />
 
-            {/* ✅ 달력 추가 */}
             <Calendar
               onDayPress={(day) => {
                 setSelectedDate(day.dateString);
@@ -90,9 +82,8 @@ const LeftPage = ({ navigation }) => {
               }}
             />
 
-            {/* ✅ 선택한 날짜에 저장된 강아지 활동 데이터 표시 */}
             <Text style={styles.dateTitle}>
-              {selectedDate ? `${selectedDate}의 활동 기록` : "날짜를 선택하세요"}
+              {selectedDate ? `Activity Record on ${selectedDate}` : "Select a Date"}
             </Text>
 
             {activityData.length > 0 ? (
@@ -104,15 +95,15 @@ const LeftPage = ({ navigation }) => {
                     <Text style={styles.defaultIcon}>🐾</Text>
                   )}
                   <View style={styles.activityDetails}>
-                    <Text style={styles.activityText}>🐶 {activity.dogName}</Text>
-                    <Text style={styles.activityText}>📅 저장 날짜: {activity.localDate}</Text>
-                    <Text style={styles.activityText}>📅 산책 시간: {activity.walkedTime} 분</Text>
-                    <Text style={styles.activityText}>🚶 걸음 수: {activity.steps}</Text>
+                    <Text style={styles.activityText}> {activity.dogName}</Text>
+                    <Text style={styles.activityText}> Recorded Date: {activity.localDate}</Text>
+                    <Text style={styles.activityText}> Walk Time: {activity.walkedTime} min</Text>
+                    <Text style={styles.activityText}> Steps Taken: {activity.steps}</Text>
                   </View>
                 </View>
               ))
             ) : (
-              <Text style={styles.noDataText}>📌 선택한 날짜에 저장된 활동이 없습니다.</Text>
+              <Text style={styles.noDataText}> No activity recorded on the selected date.</Text>
             )}
           </View>
         </ScrollView>

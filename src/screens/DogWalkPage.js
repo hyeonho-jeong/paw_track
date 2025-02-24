@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 
-// ✅ JSON 파일에서 강아지 산책 정보 불러오기
+// ✅ Load dog walking information from JSON file
 const dogBreeds = require("../../assets/dogBreeds.json");
 
 const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
@@ -10,7 +10,7 @@ const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
   const timerRef = useRef(null);
 
   if (!dogInfo) {
-    return <Text style={styles.text}>강아지 정보가 없습니다.</Text>;
+    return <Text style={styles.text}>No dog information available.</Text>;
   }
 
   const getWalkTime = () => {
@@ -48,12 +48,12 @@ const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.text}>🐾 {dogInfo.name}의 산책 정보</Text>
-        <Text style={styles.text}>권장 산책 시간: {getWalkTime()} 분</Text>
+        <Text style={styles.text}>🐾 {dogInfo.name}'s Walking Info</Text>
+        <Text style={styles.text}>Recommended Walk Time: {getWalkTime()} min</Text>
         <Text style={styles.text}>
-          경과 시간: {Math.floor(elapsedTime / 60)}분 {elapsedTime % 60}초
+          Elapsed Time: {Math.floor(elapsedTime / 60)} min {elapsedTime % 60} sec
         </Text>
-        <Button title={isRunning ? "타이머 중지" : "타이머 시작"} onPress={toggleTimer} />
+        <Button title={isRunning ? "Stop Timer" : "Start Timer"} onPress={toggleTimer} />
       </View>
     </View>
   );

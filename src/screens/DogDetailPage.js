@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db } from "../../firebase";
 import DogInfoPage from "./DogInfoPage";
 import DogWalkPage from "./DogWalkPage";
@@ -10,6 +11,9 @@ const DogDetailPage = ({ route }) => {
   const { dog } = route.params;
   const [steps, setSteps] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
+
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   // ✅ 최신 값 유지용 useRef
   const stepsRef = useRef(steps);
@@ -28,39 +32,53 @@ const DogDetailPage = ({ route }) => {
     console.log("✅ 걸음 수 업데이트:", newSteps);
     setSteps(newSteps);
   };
-  
+
   const handleTimeUpdate = (elapsedTime) => {
     console.log("✅ 산책 시간 업데이트:", elapsedTime);
     setTimeElapsed(elapsedTime);
   };
 
-  // ✅ Firestore에 활동 저장
+  // ✅ Firestore에 활동 저장 (users/{userId}/activity + users_activity)
   const handleSaveActivity = async () => {
-    console.log("🔍 현재 강아지 정보:", dog);
-    console.log("🚶 저장 시 걸음 수:", steps);
-    console.log("⏱️ 저장 시 산책 시간:", timeElapsed);
-  
+    if (!user) {
+      Alert.alert("Error", "로그인이 필요합니다.");
+      return;
+    }
+
     if (!dog?.userId) {
       Alert.alert("Error", "강아지의 정보를 찾을 수 없습니다.");
       return;
     }
 
-    // ✅ Firestore에 저장할 데이터
+    const userEmail = user.email || "unknown@example.com"; // ✅ 이메일이 없을 경우 대비
+    const username = userEmail.split("@")[0]; // ✅ 이메일 앞부분을 username으로 저장
+    console.log("🔍 저장할 사용자:", username);
+
+    // ✅ Firestore에 저장할 데이터 (공개/개인용)
     const activityData = {
-      dogName: dog.name,
-      age: dog.age,
+      userId: user.uid, // ✅ 사용자 ID 포함
+      username: username, // ✅ 사용자 이름 저장
+      dogName: dog.name || "Unknown Dog",
+      age: dog.age || "N/A",
       walkedTime: (timeElapsed / 60).toFixed(2),
-      steps: steps,
-      timestamp: new Date(),
-      image: dog.image, // ✅ `DogInfoPage`에서 이미 제공하는 이미지 정보 활용
+      steps: steps || 0,
+      timestamp: serverTimestamp(), // ✅ 서버 시간으로 저장
+      ...(dog.image ? { image: dog.image } : {}), // ✅ 이미지가 있을 경우 저장
     };
-  
+
     try {
-      const activityCollectionRef = collection(db, "users", dog.userId, "activity");
-      await addDoc(activityCollectionRef, activityData);
+      // 🔹 1) 개인 기록 저장 (users/{userId}/activity)
+      const userActivityRef = collection(db, "users", user.uid, "activity");
+      await addDoc(userActivityRef, activityData);
+
+      // 🔹 2) 랭킹용 공개 데이터 저장 (users_activity)
+      const publicActivityRef = collection(db, "users_activity");
+      await addDoc(publicActivityRef, activityData);
+
       Alert.alert("Success", `${dog.name}의 활동이 저장되었습니다!`);
+      console.log("✅ 활동 데이터 저장 완료");
     } catch (error) {
-      console.error("Firestore 저장 오류:", error);
+      console.error("🚨 Firestore 저장 오류:", error);
       Alert.alert("Error", `저장 실패: ${error.message}`);
     }
   };
@@ -75,7 +93,7 @@ const DogDetailPage = ({ route }) => {
       <StepCounter onStepsUpdate={handleStepsUpdate} />
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSaveActivity}>
-        <Text style={styles.saveButtonText}>오늘의 활동 저장</Text>
+        <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
     </View>
   );
@@ -95,3 +113,4 @@ const styles = StyleSheet.create({
 });
 
 export default DogDetailPage;
+

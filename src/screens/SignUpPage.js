@@ -15,20 +15,20 @@ const SignUpPage = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const validatePassword = (password) => {
-    if (password.length < 6) return '비밀번호는 최소 6자 이상이어야 합니다.';
+    if (password.length < 6) return 'Password must be at least 6 characters long.';
     if (!/\d/.test(password) || !/[a-zA-Z]/.test(password))
-      return '비밀번호는 숫자와 문자를 포함해야 합니다.';
+      return 'Password must include both numbers and letters.';
     return '';
   };
 
   const handleSignUp = async () => {
     if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
-      Alert.alert('오류', '모든 필드를 입력해주세요.');
+      Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
   
     if (password !== confirmPassword) {
-      setPasswordError('비밀번호가 일치하지 않습니다.');
+      setPasswordError('Passwords do not match.');
       return;
     }
   
@@ -45,41 +45,41 @@ const SignUpPage = ({ navigation }) => {
     try {
       const signInMethods = await fetchSignInMethodsForEmail(auth, email.trim());
       if (signInMethods.length > 0) {
-        throw new Error('이미 사용 중인 이메일입니다. 다른 이메일을 입력해주세요.');
+        throw new Error('This email is already in use. Please use a different email.');
       }
   
-      // ✅ Firebase Authentication에서 회원가입 진행
+      // ✅ Register user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
-      const user = userCredential.user; // ✅ 회원가입한 사용자 정보 가져오기
+      const user = userCredential.user; 
+
+      console.log("✅ Sign-up successful! User UID:", user.uid);
   
-      console.log("✅ 회원가입 성공! 현재 사용자 UID:", user.uid);
-  
-      // ✅ Firestore에 사용자 정보 저장 (users/{userId})
+      // ✅ Save user info in Firestore (users/{userId})
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
         createdAt: new Date().toISOString(),
       });
   
-      console.log("✅ Firestore에 사용자 정보 저장 완료!");
+      console.log("✅ User information saved in Firestore!");
   
-      // ✅ 회원가입 후 자동 로그인
+      // ✅ Auto-login after sign-up
       await signInWithEmailAndPassword(auth, email.trim(), password);
   
-      Alert.alert('성공', '회원가입이 완료되었습니다.');
-      navigation.navigate('MainTabs'); // ✅ 회원가입 후 로그인 없이 메인 화면으로 이동
+      Alert.alert('Success', 'Sign-up completed successfully.');
+      navigation.navigate('MainTabs'); // ✅ Navigate to main screen after sign-up
     } catch (error) {
-      console.error('회원가입 오류:', error.message);
-      let errorMessage = '회원가입 중 문제가 발생했습니다.';
+      console.error('Sign-up error:', error.message);
+      let errorMessage = 'An error occurred during sign-up.';
   
       if (error.code === 'auth/email-already-in-use') {
-        errorMessage = '이미 사용 중인 이메일입니다. 다른 이메일을 입력해주세요.';
+        errorMessage = 'This email is already in use. Please use a different email.';
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = '올바른 이메일 형식을 입력해주세요.';
+        errorMessage = 'Please enter a valid email address.';
       } else if (error.code === 'auth/weak-password') {
-        errorMessage = '비밀번호는 최소 6자 이상이어야 합니다.';
+        errorMessage = 'Password must be at least 6 characters long.';
       }
   
-      Alert.alert('오류', errorMessage);
+      Alert.alert('Error', errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -94,12 +94,12 @@ const SignUpPage = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
           <View style={styles.container}>
-            <Text style={styles.title}>회원가입</Text>
+            <Text style={styles.title}>Sign Up</Text>
 
             {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
             <TextInput
-              placeholder="이메일"
+              placeholder="Email"
               value={email}
               onChangeText={setEmail}
               autoCapitalize="none"
@@ -108,7 +108,7 @@ const SignUpPage = ({ navigation }) => {
               style={styles.input}
             />
             <TextInput
-              placeholder="비밀번호"
+              placeholder="Password"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -117,7 +117,7 @@ const SignUpPage = ({ navigation }) => {
               style={styles.input}
             />
             <TextInput
-              placeholder="비밀번호 확인"
+              placeholder="Confirm Password"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
@@ -129,7 +129,7 @@ const SignUpPage = ({ navigation }) => {
             {isLoading ? (
               <ActivityIndicator size="large" color="#007AFF" />
             ) : (
-              <Button title="회원가입" onPress={handleSignUp} />
+              <Button title="Sign Up" onPress={handleSignUp} />
             )}
           </View>
         </ScrollView>
@@ -139,7 +139,7 @@ const SignUpPage = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: { flexGrow: 1 }, // ✅ 스크롤 가능하도록 설정
+  scrollContainer: { flexGrow: 1 },
   container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#fff' },
   title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
   input: { marginVertical: 10, padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc', fontSize: 16 },

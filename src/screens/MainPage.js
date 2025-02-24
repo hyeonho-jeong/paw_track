@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../AuthContext";
 import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import HeaderButtons from "../components/HeaderButtons";
 
 const MainPage = () => {
   const { user } = useContext(AuthContext);
@@ -30,20 +31,20 @@ const MainPage = () => {
 
   const handleDeleteDog = async (dogId) => {
     Alert.alert(
-      "삭제 확인",
-      "정말 이 강아지를 삭제하시겠습니까?",
+      "Delete Confirmation",
+      "Are you sure you want to delete this dog?",
       [
-        { text: "취소", style: "cancel" },
+        { text: "Cancel", style: "cancel" }, // ✅ "취소" → "Cancel"
         {
-          text: "삭제",
+          text: "Delete", // ✅ "삭제" → "Delete"
           onPress: async () => {
             try {
               const dogRef = doc(db, "users", user.uid, "dogs", dogId);
               await deleteDoc(dogRef);
-              console.log(`✅ 강아지 ${dogId} 삭제 완료!`);
+              console.log(`✅ Dog ${dogId} deleted successfully!`);
             } catch (error) {
-              console.error("🚨 강아지 삭제 오류:", error);
-              Alert.alert("Error", "강아지를 삭제하는 중 오류가 발생했습니다.");
+              console.error("🚨 Error deleting dog:", error);
+              Alert.alert("Error", "An error occurred while deleting the dog.");
             }
           },
         },
@@ -55,17 +56,16 @@ const MainPage = () => {
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>🐶 강아지 리스트</Text>
+        <Text style={styles.title}>Dog List</Text> {/* ✅ "강아지 리스트" → "Dog List" */}
         <ScrollView>
+        <HeaderButtons navigation={navigation} />
           {dogInfo.map((dog) => (
             <View key={dog.id} style={styles.dogItem}>
-              {/* ✅ 강아지 정보 터치 시 상세 페이지로 이동 */}
               <TouchableOpacity 
                 style={styles.dogInfo} 
                 onPress={() => navigation.navigate("DogDetail", { dog })}
               >
                 <View style={styles.dogInfoContainer}>
-                  {/* ✅ 이미지 표시: 없으면 기본 🐾 아이콘 */}
                   {dog.image ? (
                     <Image source={{ uri: dog.image }} style={styles.dogImage} />
                   ) : (
@@ -75,12 +75,11 @@ const MainPage = () => {
                 </View>
               </TouchableOpacity>
 
-              {/* ✅ 삭제 버튼 */}
               <TouchableOpacity 
                 style={styles.deleteButton} 
                 onPress={() => handleDeleteDog(dog.id)}
               >
-                <Text style={styles.deleteButtonText}>삭제</Text>
+                <Text style={styles.deleteButtonText}>Delete</Text> {/* ✅ "삭제" → "Delete" */}
               </TouchableOpacity>
             </View>
           ))}
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
   },
   container: { 
     flex: 1, 
-    paddingTop: 50, // ✅ 상태바 높이만큼 여백 추가
+    paddingTop: 50, 
     paddingHorizontal: 20, 
     backgroundColor: "#fff",
   },
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
   dogImage: { 
     width: 50, 
     height: 50, 
-    borderRadius: 25, // ✅ 둥근 이미지 적용
+    borderRadius: 25,
     marginRight: 10, 
   },
   defaultIcon: { 
