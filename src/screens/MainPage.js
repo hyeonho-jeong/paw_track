@@ -34,9 +34,9 @@ const MainPage = () => {
       "Delete Confirmation",
       "Are you sure you want to delete this dog?",
       [
-        { text: "Cancel", style: "cancel" }, // ✅ "취소" → "Cancel"
+        { text: "Cancel", style: "cancel" },
         {
-          text: "Delete", // ✅ "삭제" → "Delete"
+          text: "Delete",
           onPress: async () => {
             try {
               const dogRef = doc(db, "users", user.uid, "dogs", dogId);
@@ -56,34 +56,36 @@ const MainPage = () => {
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>Dog List</Text> {/* ✅ "강아지 리스트" → "Dog List" */}
-        <ScrollView>
-        <HeaderButtons navigation={navigation} />
-          {dogInfo.map((dog) => (
-            <View key={dog.id} style={styles.dogItem}>
-              <TouchableOpacity 
-                style={styles.dogInfo} 
-                onPress={() => navigation.navigate("DogDetail", { dog })}
-              >
-                <View style={styles.dogInfoContainer}>
-                  {dog.image ? (
-                    <Image source={{ uri: dog.image }} style={styles.dogImage} />
-                  ) : (
-                    <Text style={styles.defaultIcon}>🐾</Text>
-                  )}
-                  <Text style={styles.dogName}>{dog.name}</Text>
-                </View>
-              </TouchableOpacity>
+        <Text style={styles.title}>Dog List</Text>
+        <View style={styles.dogListContainer}> 
+          <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+            <HeaderButtons navigation={navigation} />
+            {dogInfo.map((dog) => (
+              <View key={dog.id} style={styles.dogItem}>
+                <TouchableOpacity 
+                  style={styles.dogInfo} 
+                  onPress={() => navigation.navigate("DogDetail", { dog })}
+                >
+                  <View style={styles.dogInfoContainer}>
+                    {dog.image ? (
+                      <Image source={{ uri: dog.image }} style={styles.dogImage} />
+                    ) : (
+                      <Text style={styles.defaultIcon}>🐾</Text>
+                    )}
+                    <Text style={styles.dogName}>{dog.name}</Text>
+                  </View>
+                </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={styles.deleteButton} 
-                onPress={() => handleDeleteDog(dog.id)}
-              >
-                <Text style={styles.deleteButtonText}>Delete</Text> {/* ✅ "삭제" → "Delete" */}
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
+                <TouchableOpacity 
+                  style={styles.deleteButton} 
+                  onPress={() => handleDeleteDog(dog.id)}
+                >
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -92,19 +94,33 @@ const MainPage = () => {
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "rgb(238,117,11)",
   },
   container: { 
     flex: 1, 
-    paddingTop: 50, 
+    paddingTop: 30, 
     paddingHorizontal: 20, 
-    backgroundColor: "#fff",
+    backgroundColor: "rgb(238,117,11)",
   },
   title: { 
     fontSize: 24, 
     fontWeight: "bold", 
-    marginBottom: 20, 
+    marginBottom: 20, // ✅ Dog List 제목과 리스트 사이 간격 추가
     textAlign: "center",
+    color: "white",
+  },
+  dogListContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10, // ✅ Dog List 제목과 리스트 사이 간격 추가
+  },
+  scrollView: {
+    backgroundColor: "white",
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   dogItem: {
     flexDirection: "row",
@@ -112,8 +128,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 15,
     marginVertical: 10,
-    backgroundColor: "#f9c2ff",
+    backgroundColor: "white",
     borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "rgb(238,117,11)",
   },
   dogInfo: { flex: 1 },
   dogInfoContainer: { 
@@ -135,7 +153,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold" 
   },
   deleteButton: {
-    backgroundColor: "#ff4d4d",
+    backgroundColor: "rgb(241,149,74)",
     padding: 10,
     borderRadius: 5,
   },

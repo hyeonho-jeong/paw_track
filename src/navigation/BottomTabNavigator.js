@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 80, // ✅ 탭 바보다 위에 위치하도록 설정
     right: 20, // ✅ 우측 정렬
-    backgroundColor: "#007AFF", // ✅ 버튼 색상 (파란색)
+    backgroundColor: 'rgb(240,82,34)', // ✅ 버튼 색상 (파란색)
     width: 65,
     height: 65,
     borderRadius: 32.5, // ✅ 동그라미 버튼
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
-    elevation: 5, // ✅ 안드로이드 그림자 효과
-    zIndex: 10, // ✅ 항상 위쪽에 배치
+    elevation: 5,
+    zIndex: 10,
   },
   fabText: {
     color: "white",

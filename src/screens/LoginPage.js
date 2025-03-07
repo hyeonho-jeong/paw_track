@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { 
-  View, TextInput, Button, StyleSheet, Alert, Text, TouchableOpacity, 
+  View, TextInput, StyleSheet, Alert, Text, TouchableOpacity, 
   TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, Platform, ActivityIndicator, ScrollView 
 } from 'react-native';
 import { AuthContext } from '../../AuthContext';
@@ -22,27 +22,16 @@ const LoginPage = ({ navigation }) => {
     }
 
     setIsLoading(true);
-    setError(''); // 기존 에러 메시지 초기화
+    setError('');
 
     try {
-      console.log("🚀 Attempting to log in with:", email, password);
-
-      // ✅ Firebase 인증을 통한 로그인 처리
       const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
       const user = userCredential.user;
-
-      console.log("✅ Firebase Login successful! User UID:", user.uid);
-
-      // 로그인 성공 후에만 상태 변경
       setIsLoggedIn(true);
       Alert.alert('Login Successful', 'Redirecting to the main page.');
-      navigation.replace('MainTabs'); // ✅ 로그인 성공 시 MainTabs로 이동
+      navigation.replace('MainTabs');
     } catch (error) {
-      console.error('❌ Login Error:', error.code, error.message);
-
       let errorMessage = 'Login failed. Please check your email and password.';
-
-      // 🔹 Firebase 오류 코드에 따라 사용자 친화적인 메시지 제공
       if (error.code === 'auth/user-not-found') {
         errorMessage = 'No account found with this email.';
       } else if (error.code === 'auth/wrong-password') {
@@ -52,7 +41,6 @@ const LoginPage = ({ navigation }) => {
       } else {
         errorMessage = error.message;
       }
-
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -62,7 +50,7 @@ const LoginPage = ({ navigation }) => {
   return (
     <KeyboardAvoidingView 
       style={{ flex: 1 }} 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView 
@@ -70,7 +58,7 @@ const LoginPage = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+            <Text style={styles.title}>Sign in</Text>
 
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
@@ -94,20 +82,24 @@ const LoginPage = ({ navigation }) => {
               style={styles.input}
             />
 
-            {isLoading ? (
-              <ActivityIndicator size="large" color="#007AFF" />
-            ) : (
-              <Button title="Login" onPress={handleLogin} />
-            )}
+            <TouchableOpacity onPress={handleLogin} style={styles.loginButton} disabled={isLoading}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.loginButtonText}>Sign in</Text>
+              )}
+            </TouchableOpacity>
 
+            <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.signupButton}>
-              <Text style={styles.signupText}>Don't have an account? Sign Up</Text>
+              <Text style={styles.signupButtonText}>  Sign Up  </Text>
             </TouchableOpacity>
 
-            {/* ✅ MainPage로 가는 버튼 추가 */}
-            <TouchableOpacity onPress={() => navigation.navigate('MainTabs')} style={styles.skipButton}>
-              <Text style={styles.skipText}>Skip Login & Go to Main Page</Text>
-            </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.navigate('MainTabs')} style={styles.skipButton}>
+                <Text style={styles.skipButtonText}>MainPage</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
@@ -141,25 +133,77 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
+
+  loginButton: {
+    backgroundColor: 'rgb(238,117,11)',
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  loginButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center', 
+    marginTop: 20,
+  },
+
   signupButton: {
-    marginTop: 20,
+    backgroundColor: 'white',   
+    borderColor: 'rgb(238,117,11)',  
+    borderWidth: 2,   
+    paddingVertical: 12,
+    paddingHorizontal: 40, 
+    borderRadius: 25,
     alignItems: 'center',
+    flex: 1,              
+    marginHorizontal: 5,   
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  signupText: {
-    color: 'blue',
-    textDecorationLine: 'underline',
+
+  signupButtonText: {
+    color: 'rgb(238,117,11)', 
     fontSize: 16,
+    fontWeight: 'bold',
   },
+
   skipButton: {
-    marginTop: 20,
+    backgroundColor: 'white',  
+    borderWidth: 2,           
+    borderColor: 'rgb(238,117,11)',  
+    paddingVertical: 12,
+    paddingHorizontal: 40, 
+    borderRadius: 25,
     alignItems: 'center',
+    flex: 1,              
+    marginHorizontal: 5,   
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  skipText: {
-    color: '#FF4500',
-    textDecorationLine: 'underline',
+
+  skipButtonText: {
+    color: 'rgb(238,117,11)', 
     fontSize: 16,
     fontWeight: 'bold',
   },
 });
+
 
 export default LoginPage;

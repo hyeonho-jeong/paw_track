@@ -16,7 +16,7 @@ const HeaderButtons = ({ navigation }) => {
 
   return (
     <View style={styles.headerButtons}>
-      <Button title={isLoggedIn ? "Logout" : "Login"} onPress={handleLoginPress} />
+      <Button title={isLoggedIn ? "Sign out" : "Sign in"} onPress={handleLoginPress} />
     </View>
   );
 };
