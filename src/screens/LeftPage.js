@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgb(238,117,11)",
     alignItems: "center",
-    justifyContent: "flex-start", // ✅ Dog History가 짤리지 않도록 수정
-    paddingTop: 90, // ✅ 상단 여백 추가
+    justifyContent: "flex-start", 
+    paddingTop: 90, 
   },
   container: { 
     width: "90%",
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderWidth: 2,
     borderColor: "rgb(238,117,11)",
-    marginTop: 10, // ✅ Dog History와 컨테이너 간 간격 추가
+    marginTop: 10,
   },
   containerFullHeight: {
     flexGrow: 1, // ✅ 컨테이너가 스크롤 가능하도록 변경하여 Dog History가 보이게 수정

@@ -16,7 +16,11 @@ const HeaderButtons = ({ navigation }) => {
 
   return (
     <View style={styles.headerButtons}>
-      <Button title={isLoggedIn ? "Sign out" : "Sign in"} onPress={handleLoginPress} />
+      <Button 
+        title={isLoggedIn ? "Sign out" : "Sign in"} 
+        onPress={handleLoginPress} 
+        color="rgb(238,117,11)" // ✅ 주황색 적용
+      />
     </View>
   );
 };

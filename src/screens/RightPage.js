@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   View, Text, StyleSheet, TouchableOpacity, FlatList, 
-  Alert, ActivityIndicator, SafeAreaView
+  Alert, ActivityIndicator, SafeAreaView, Image
 } from "react-native";
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
@@ -39,6 +39,7 @@ const RightPage = () => {
           dogName: docData.dogName || "Unknown Dog",
           steps: docData.steps || 0,
           walkedTime: parseFloat(docData.walkedTime) || 0,
+          image: docData.image || null, // ✅ 강아지 이미지 추가
           date: docData.timestamp ? docData.timestamp.toDate().toISOString().split("T")[0] : "N/A",
         };
       });
@@ -99,6 +100,11 @@ const RightPage = () => {
             renderItem={({ item, index }) => (
               <View style={styles.rankingItem}>
                 <Text style={styles.rank}>{index + 1}</Text>
+                {item.image ? (
+                  <Image source={{ uri: item.image }} style={styles.dogImage} />
+                ) : (
+                  <Text style={styles.defaultIcon}>🐾</Text>
+                )}
                 <Text style={styles.dogName}>{item.dogName}</Text>
                 <Text style={styles.statsText}>{sortBy === "walkedTime" ? `${item.walkedTime} min` : `${item.steps} steps`}</Text>
                 <Text style={styles.username}>{item.username}</Text>
@@ -149,15 +155,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderRadius: 25,
-    borderColor: "#007AFF",
+    borderColor: "rgb(237,152,74)",
   },
   activeFilter: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "rgb(237,152,74)",
   },
   filterButtonText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#007AFF",
+    color: "rgb(237,152,74)",
   },
   activeFilterText: {
     color: "#fff",
@@ -170,9 +176,8 @@ const styles = StyleSheet.create({
   sortButton: {
     paddingVertical: 8,
     paddingHorizontal: 15,
-    borderRadius: 5,
-    borderWidth: 1,
     borderRadius: 25,
+    borderWidth: 1,
     borderColor: "#28a745",
   },
   activeSort: {
@@ -182,6 +187,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#28a745",
+  },
+  activeSortText: {
+    color: "#fff",
   },
   rankingItem: {
     flexDirection: "row",
@@ -224,6 +232,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "rgb(238,117,11)",
+  },
+  dogImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginHorizontal: 10, // ✅ 이미지와 텍스트 사이 간격 추가
+  },
+  defaultIcon: {
+    fontSize: 30,
+    marginHorizontal: 10,
   },
   rank: {
     fontSize: 18,
