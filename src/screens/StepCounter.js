@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Pedometer } from "expo-sensors";
 
 const StepCounter = ({ onStepsUpdate }) => {  
@@ -16,18 +16,17 @@ const StepCounter = ({ onStepsUpdate }) => {
 
         if (isAvailable) {
           subscription = Pedometer.watchStepCount((result) => {
-            console.log("📢 걸음 수 업데이트:", result.steps); // ✅ 로그 추가
-            setStepCount((prevSteps) => {
-              const updatedSteps = prevSteps + result.steps; // ✅ 걸음 수 누적 업데이트
-              if (onStepsUpdate) {
-                onStepsUpdate(updatedSteps);  // ✅ 걸음 수 업데이트 전달
-              }
-              return updatedSteps;
-            });
+            console.log("Update the stepCount:", result.steps); 
+            setStepCount(result.steps); 
+
+            if (onStepsUpdate) {
+              onStepsUpdate(result.steps); 
+            }
           });
         }
-      } catch (error) {
-        console.error("🚨 Pedometer error:", error);
+      } 
+      catch (error) {
+        console.error("Pedometer error:", error);
         setPedometerAvailable(false);
       }
     }
@@ -41,10 +40,9 @@ const StepCounter = ({ onStepsUpdate }) => {
     };
   }, []);
 
-  // ✅ 걸음 수가 변경될 때마다 onStepsUpdate 호출
   useEffect(() => {
     if (onStepsUpdate) {
-      console.log("📢 걸음 수 업데이트 호출됨:", stepCount);
+      console.log("stepCount:", stepCount);
       onStepsUpdate(stepCount);
     }
   }, [stepCount]);
@@ -58,11 +56,15 @@ const StepCounter = ({ onStepsUpdate }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headingDesign}>
-        Pedometer Available: {pedometerAvailable ? "Yes" : "No"}
-      </Text>
-      <Text style={styles.headingDesign}>Steps Taken: {stepCount}</Text>
-      <Button title="Reset Steps" onPress={resetStepCount} color="#841584" />
+      <View style={styles.card}>
+        <View style={styles.row}>
+          <Text style={styles.headingDesign}>Steps Count: {stepCount}</Text>
+
+          <TouchableOpacity style={styles.resetButton} onPress={resetStepCount}>
+            <Text style={styles.buttonText}>Reset</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
@@ -73,15 +75,49 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 20,
   },
+  card: {
+    backgroundColor: "white",
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgb(221,221,221)",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    width: "100%",
+  },
+  row: {
+    flexDirection: "row", 
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   headingDesign: {
-    color: "white",
-    backgroundColor: "rgb(155,89,182)",
-    alignSelf: "center",
     fontSize: 18,
     fontWeight: "bold",
     padding: 10,
-    margin: 5,
+    marginLeft: 5,
     borderRadius: 5,
+  },
+  resetButton: {
+    width: 80,
+    height: 80, 
+    borderRadius:50,
+    backgroundColor: "rgb(254,112,57)",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
   },
 });
 

@@ -13,4 +13,4 @@ with open(csv_file, encoding="utf-8") as file:
 with open(json_file, "w", encoding="utf-8") as file:
     json.dump(data, file, ensure_ascii=False, indent=4)
 
-print("✅ CSV → JSON 변환 완료! 'assets/dogBreeds.json' 파일이 생성되었습니다.")
+print("CSV → JSON conversion complete")

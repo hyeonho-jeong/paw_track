@@ -9,7 +9,6 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const SignupPage = ({ navigation }) => {
   const { setIsLoggedIn } = useContext(AuthContext);
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -27,22 +26,33 @@ const SignupPage = ({ navigation }) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
       const user = userCredential.user;
+      
       setIsLoggedIn(true);
       Alert.alert('Signup Successful', 'Redirecting to the main page.');
       navigation.replace('MainTabs');
-    } catch (error) {
+    } 
+    catch (error) {
       let errorMessage = 'Signup failed. Please check your details.';
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'This email is already in use.';
-      } else if (error.code === 'auth/invalid-email') {
+      
+      if (error.code === 'auth/email-already-in-use') 
+        {
+          errorMessage = 'This email is already in use.';
+        } 
+      else if (error.code === 'auth/invalid-email') 
+        {
         errorMessage = 'Invalid email format.';
-      } else if (error.code === 'auth/weak-password') {
+        } 
+      else if (error.code === 'auth/weak-password') 
+        {
         errorMessage = 'Password should be at least 6 characters.';
-      } else {
+        } 
+      else 
+      {
         errorMessage = error.message;
       }
       setError(errorMessage);
-    } finally {
+    } 
+    finally {
       setIsLoading(false);
     }
   };

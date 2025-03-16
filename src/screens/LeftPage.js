@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { 
-  View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, 
-  TouchableWithoutFeedback, Keyboard, Platform, Image 
+  View, Text, StyleSheet, KeyboardAvoidingView, 
+  TouchableWithoutFeedback, Keyboard, Platform, Image, FlatList
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -15,15 +15,17 @@ const LeftPage = ({ navigation }) => {
   const [activityData, setActivityData] = useState([]); 
 
   const fetchActivityData = async (date) => {
-    if (!user) return;
+    if (!user) 
+      return;
 
     setActivityData([]); 
 
     try {
         const userActivityRef = collection(db, "users", user.uid, "activity");
 
-        const selectedUTCDate = new Date(date); 
+        const selectedUTCDate = new Date(date);  
         selectedUTCDate.setUTCHours(0, 0, 0, 0); 
+        
         const nextUTCDate = new Date(selectedUTCDate);
         nextUTCDate.setUTCDate(nextUTCDate.getUTCDate() + 1); 
 
@@ -36,10 +38,10 @@ const LeftPage = ({ navigation }) => {
 
         if (querySnapshot.empty) {
             setActivityData([]); 
-        } else {
+        } 
+        else {
             const activities = querySnapshot.docs.map(doc => {
                 const activity = doc.data();
-
                 const localDate = activity.timestamp.toDate().toLocaleDateString(); 
                 const localTime = activity.timestamp.toDate().toLocaleTimeString(); 
 
@@ -53,10 +55,11 @@ const LeftPage = ({ navigation }) => {
 
             setActivityData(activities);
         }
-    } catch (error) {
-        console.error("🚨 Error fetching Firestore data:", error);
+    } 
+    catch (error) {
+        console.error("Error fetching Firestore data:", error);
     }
-};
+  };
 
   return (
     <KeyboardAvoidingView 
@@ -66,47 +69,57 @@ const LeftPage = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.safeContainer}>
           <Text style={styles.title}>Dog History</Text>
-          <View style={[styles.container, styles.containerFullHeight]}>
-            <HeaderButtons navigation={navigation} />
-            <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-              <Calendar
-                onDayPress={(day) => {
-                  setSelectedDate(day.dateString);
-                  fetchActivityData(day.dateString);
-                }}
-                markedDates={{
-                  [selectedDate]: { selected: true, selectedColor: "#007AFF" },
-                }}
-                theme={{
-                  selectedDayBackgroundColor: "#007AFF",
-                  todayTextColor: "#FF4500",
-                }}
-              />
 
-              <Text style={styles.dateTitle}>
-                {selectedDate ? `Activity Record on ${selectedDate}` : "Select a Date"}
-              </Text>
+            <View style={styles.container}>
+              
+              <HeaderButtons navigation={navigation} />
 
-              {activityData.length > 0 ? (
-                activityData.map((activity) => (
-                  <View key={activity.id} style={styles.activityItem}>
-                    {activity.image ? (
-                      <Image source={{ uri: activity.image }} style={styles.activityImage} />
-                    ) : (
-                      <Text style={styles.defaultIcon}>🐾</Text>
-                    )}
-                    <View style={styles.activityDetails}>
-                      <Text style={styles.activityText}> {activity.dogName}</Text>
-                      <Text style={styles.activityText}> Recorded Date: {activity.localDate}</Text>
-                      <Text style={styles.activityText}> Walk Time: {activity.walkedTime} min</Text>
-                      <Text style={styles.activityText}> Steps Taken: {activity.steps}</Text>
-                    </View>
+                <Calendar
+                  onDayPress={(day) => {
+                    setSelectedDate(day.dateString);
+                    fetchActivityData(day.dateString);
+                  }}
+                  markedDates={{
+                    [selectedDate]: { selected: true, selectedColor: "rgb(40,167,69)" },
+                  }}
+                  theme={{
+                    selectedDayBackgroundColor: "rgb(40,167,69)",
+                    todayTextColor: "rgb(255,69,0)",
+                  }}
+                  style={styles.calendar}
+                />
+
+            <Text style={styles.dateTitle}>
+              {selectedDate ? `Activity Record on ${selectedDate}` : "Select a Date"}
+            </Text>
+
+            <FlatList
+              data={activityData}
+              keyExtractor={(item) => item.id}
+              
+              renderItem={({ item }) => (
+                <View style={styles.activityItem}>
+                  {item.image ? (
+                    <Image source={{ uri: item.image }} style={styles.activityImage} />
+                  ) : (
+                    <Text style={styles.defaultIcon}>🐾</Text>
+                  )}
+
+                  <View style={styles.activityDetails}>
+                    <Text style={styles.activityText}> {item.dogName}</Text>
+                    <Text style={styles.activityText}> Recorded Date: {item.localDate}</Text>
+                    <Text style={styles.activityText}> Walk Time: {item.walkedTime} min</Text>
+                    <Text style={styles.activityText}> Steps Taken: {item.steps}</Text>
                   </View>
-                ))
-              ) : (
-                <Text style={styles.noDataText}> No activity recorded on the selected date.</Text>
+                </View>
               )}
-            </ScrollView>
+
+              ListEmptyComponent={<Text style={styles.noDataText}> No activity recorded on the selected date.</Text>}
+              
+              contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+              keyboardShouldPersistTaps="handled"
+              nestedScrollEnabled={true}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -130,9 +143,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "rgb(238,117,11)",
     marginTop: 10,
-  },
-  containerFullHeight: {
-    flexGrow: 1, // ✅ 컨테이너가 스크롤 가능하도록 변경하여 Dog History가 보이게 수정
+    flex: 1,
   },
   title: {
     fontSize: 24,
@@ -140,6 +151,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
     marginBottom: 10,
+  },
+  calendar: {
+    marginBottom: 10, 
+    borderRadius: 10,
   },
   dateTitle: {
     fontSize: 18,

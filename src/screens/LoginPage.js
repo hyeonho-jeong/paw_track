@@ -9,7 +9,6 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginPage = ({ navigation }) => {
   const { setIsLoggedIn } = useContext(AuthContext);
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -27,22 +26,33 @@ const LoginPage = ({ navigation }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
       const user = userCredential.user;
+      
       setIsLoggedIn(true);
       Alert.alert('Login Successful', 'Redirecting to the main page.');
       navigation.replace('MainTabs');
-    } catch (error) {
+      } 
+    catch (error) {
       let errorMessage = 'Login failed. Please check your email and password.';
-      if (error.code === 'auth/user-not-found') {
+      
+      if (error.code === 'auth/user-not-found') 
+        {
         errorMessage = 'No account found with this email.';
-      } else if (error.code === 'auth/wrong-password') {
+        } 
+      else if (error.code === 'auth/wrong-password') 
+        {
         errorMessage = 'Incorrect password. Please try again.';
-      } else if (error.code === 'auth/invalid-email') {
+        }  
+      else if (error.code === 'auth/invalid-email') 
+        {
         errorMessage = 'Invalid email format.';
-      } else {
+        } 
+      else 
+        {
         errorMessage = error.message;
-      }
+        }
       setError(errorMessage);
-    } finally {
+    } 
+    finally {
       setIsLoading(false);
     }
   };
@@ -100,6 +110,7 @@ const LoginPage = ({ navigation }) => {
                 <Text style={styles.skipButtonText}>MainPage</Text>
               </TouchableOpacity>
             </View>
+
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
@@ -108,7 +119,8 @@ const LoginPage = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: { flexGrow: 1 },
+  scrollContainer: { flexGrow: 1 
+  },
   container: {
     padding: 20,
     flex: 1,

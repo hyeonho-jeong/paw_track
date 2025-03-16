@@ -7,8 +7,8 @@ import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 
 const RightPage = () => {
-  const [selectedFilter, setSelectedFilter] = useState("Today"); // Today | Week | Month
-  const [sortBy, setSortBy] = useState("walkedTime"); // walkedTime | steps
+  const [selectedFilter, setSelectedFilter] = useState("Today"); 
+  const [sortBy, setSortBy] = useState("walkedTime");
   const [rankingData, setRankingData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -17,20 +17,25 @@ const RightPage = () => {
     try {
       let startDate;
       const today = new Date();
+
       if (selectedFilter === "Today") {
         startDate = new Date(today.setHours(0, 0, 0, 0));
-      } else if (selectedFilter === "Week") {
+      } 
+      else if (selectedFilter === "Week") {
         startDate = new Date(today.setDate(today.getDate() - 7));
-      } else if (selectedFilter === "Month") {
+      } 
+      else if (selectedFilter === "Month") {
         startDate = new Date(today.setDate(1));
       }
+      
       const activityCollectionRef = collection(db, "users_activity");
       const q = query(
         activityCollectionRef,
-        where("timestamp", ">=", startDate),
-        orderBy("timestamp", "desc")
+          where("timestamp", ">=", startDate),
+          orderBy("timestamp", "desc")
       );
       const querySnapshot = await getDocs(q);
+
       const data = querySnapshot.docs.map((doc) => {
         const docData = doc.data();
         return {
@@ -39,16 +44,19 @@ const RightPage = () => {
           dogName: docData.dogName || "Unknown Dog",
           steps: docData.steps || 0,
           walkedTime: parseFloat(docData.walkedTime) || 0,
-          image: docData.image || null, // ✅ 강아지 이미지 추가
+          image: docData.image || null,
           date: docData.timestamp ? docData.timestamp.toDate().toISOString().split("T")[0] : "N/A",
         };
       });
+
       const sortedData = [...data].sort((a, b) => b[sortBy] - a[sortBy]);
       setRankingData(sortedData);
-    } catch (error) {
-      console.error("🚨 데이터 불러오기 오류:", error);
-      Alert.alert("Error", "랭킹 데이터를 불러오는 중 문제가 발생했습니다.");
-    } finally {
+    } 
+    catch (error) {
+      console.error("Data import error:", error);
+      Alert.alert("Error", "There was a problem fetching ranking data.");
+    } 
+    finally {
       setLoading(false);
     }
   };
@@ -60,6 +68,7 @@ const RightPage = () => {
   return (
     <SafeAreaView style={styles.safeContainer}>
       <Text style={styles.title}>Ranking</Text>
+      
       <View style={styles.container}>
         <View style={styles.filterContainer}>
           {["Today", "Week", "Month"].map((filter) => (
@@ -71,6 +80,7 @@ const RightPage = () => {
               <Text style={[styles.filterButtonText, selectedFilter === filter && styles.activeFilterText]}>
                 {filter}
               </Text>
+              
             </TouchableOpacity>
           ))}
         </View>
@@ -178,15 +188,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#28a745",
+    borderColor: "rgb(40,167,69)",
   },
   activeSort: {
-    backgroundColor: "#28a745",
+    backgroundColor: "rgb(40,167,69)",
   },
   sortButtonText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#28a745",
+    color: "rgb(40,167,69)",
   },
   activeSortText: {
     color: "#fff",
@@ -237,7 +247,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginHorizontal: 10, // ✅ 이미지와 텍스트 사이 간격 추가
+    marginHorizontal: 10,
   },
   defaultIcon: {
     fontSize: 30,

@@ -11,20 +11,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("✅ Firebase 인증 상태 감지 시작...");
-
     if (!auth) {
-      console.error("🚨 Firebase auth is not initialized.");
+      console.error("Firebase auth is not initialized.");
       return;
     }
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("🔄 로그인 상태 변경 감지됨:", currentUser);
+      console.log("Login status change detected:", currentUser);
 
       if (currentUser) {
-        console.log("✅ 로그인된 사용자:", currentUser.uid);
+        console.log("logged-in users:", currentUser.uid);
       } else {
-        console.log("🔴 로그인된 사용자가 없습니다.");
+        console.log("No logged-in user.");
       }
 
       setUser(currentUser);
@@ -37,11 +35,14 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogout = async () => {
     try {
-      if (!auth) return;
+      if (!auth) 
+        return;
       await signOut(auth);
       setIsLoggedIn(false);
       setUser(null);
-    } catch (error) {
+    } 
+    catch (error) 
+    {
       console.error("Logout failed:", error.message);
     }
   };
@@ -49,8 +50,8 @@ export const AuthProvider = ({ children }) => {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text>로딩 중...</Text>
+        <ActivityIndicator size="large" color="rgb(0,122,255)" />
+        <Text>Loading...</Text>
       </View>
     );
   }

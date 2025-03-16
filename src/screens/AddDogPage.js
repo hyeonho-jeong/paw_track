@@ -6,15 +6,16 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+import { AuthContext } from "../../AuthContext";
 import { db } from "../../firebase";
 import { useNavigation } from "@react-navigation/native"; 
 import { collection, addDoc } from "firebase/firestore";
-import { AuthContext } from "../../AuthContext";
+
 
 const AddDogPage = () => {
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
   const { user } = useContext(AuthContext);
-  
+
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
   const [gender, setGender] = useState("");
@@ -22,10 +23,8 @@ const AddDogPage = () => {
   const [weight, setWeight] = useState("");
   const [image, setImage] = useState(null);
   const [breeds, setBreeds] = useState([]);
-  const [showPicker, setShowPicker] = useState(false); 
+  const [showPicker, setShowPicker] = useState(false);
 
-
-  // ✅ JSON 파일에서 품종 불러오기
   useEffect(() => {
     try {
       const dogBreeds = require("../../assets/dogBreeds.json");
@@ -33,86 +32,9 @@ const AddDogPage = () => {
         setBreeds(dogBreeds);
       }
     } catch (error) {
-      console.error("🚨 Error loading dogBreeds.json:", error);
+      console.error("Error loading dogBreeds.json:", error);
     }
   }, []);
-
-  // ✅ 1MB 이하로 이미지 압축하는 함수
-  const compressImage = async (uri) => {
-    try {
-      let quality = 0.8;
-      let fileSize = await getFileSize(uri);
-
-      while (fileSize > 1000000 && quality > 0.1) {
-        const compressedImage = await ImageManipulator.manipulateAsync(
-          uri, [{ resize: { width: 800, height: 800 } }],
-          { compress: quality, format: ImageManipulator.SaveFormat.JPEG }
-        );
-        fileSize = await getFileSize(compressedImage.uri);
-        uri = compressedImage.uri;
-        quality -= 0.1;
-      }
-      return uri;
-    } catch (error) {
-      console.error("🚨 이미지 압축 실패:", error);
-      return null;
-    }
-  };
-
-  // ✅ 파일 크기 확인 함수
-  const getFileSize = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    return blob.size;
-  };
-
-  // ✅ Base64 변환
-  const convertToBase64 = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.readAsDataURL(blob);
-    });
-  };
-
-  // ✅ Firestore에 강아지 정보 + 이미지 저장
-  const saveDogInfo = async () => {
-    if (!user) {
-      Alert.alert("Error", "No user is signed in.");
-      return;
-    }
-
-    if (!name || !breed || !gender || !age || !weight) {
-      Alert.alert("Error", "모든 필수 정보를 입력하세요.");
-      return;
-    }
-
-    try {
-      let base64Image = null;
-      if (image) {
-        const compressedUri = await compressImage(image);
-        base64Image = await convertToBase64(compressedUri);
-      }
-
-      await addDoc(collection(db, "users", user.uid, "dogs"), {
-        userId: user.uid,
-        name,
-        breed,
-        gender, 
-        age: Number(age),
-        weight: Number(weight),
-        image: base64Image, 
-        createdAt: new Date(),
-      });
-
-
-    } catch (error) {
-      console.error("🚨 Firestore 저장 오류:", error);
-      Alert.alert("Error", `Failed to save dog information: ${error.message}`);
-    }
-  };
 
 
   const pickImage = async () => {
@@ -127,25 +49,117 @@ const AddDogPage = () => {
     }
   };
 
+
+  const getFileSize = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return blob.size;
+  };
+
+
+  const compressImage = async (uri) => {
+    try {
+      let quality = 0.8;
+      let fileSize = await getFileSize(uri);
+
+      while (fileSize > 1000000 && quality > 0.1) {
+        const compressedImage = await ImageManipulator.manipulateAsync(
+          uri,
+          [{ resize: { width: 800, height: 800 } }],
+          { compress: quality, format: ImageManipulator.SaveFormat.JPEG }
+        );
+        fileSize = await getFileSize(compressedImage.uri);
+        uri = compressedImage.uri;
+        quality -= 0.1;
+      }
+      return uri;
+    } catch (error) {
+      console.error("Compress fail:", error);
+      return null;
+    }
+  };
+
+
+  const convertToBase64 = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  };
+
+
+  const saveDogInfo = async () => {
+    if (!user) {
+      Alert.alert("Error", "No user is signed in.");
+      console.error("User not found.");
+      return;
+    }
+
+    if (!name || !breed || !gender || !age || !weight) {
+      Alert.alert("Error", "You must enter all required information except for the photo.");
+      console.error("Missing required fields.");
+      return;
+    }
+
+    try {
+      console.log("Trying to save dog info...");
+
+      let base64Image = null;
+
+      if (image) {
+        console.log("Compressing and converting image...");
+        const compressedUri = await compressImage(image);
+        base64Image = await convertToBase64(compressedUri);
+        console.log("Image conversion complete.");
+      }
+
+      const docRef = await addDoc(collection(db, "users", user.uid, "dogs"), {
+        userId: user.uid,
+        name,
+        breed,
+        gender,
+        age: Number(age),
+        weight: Number(weight),
+        image: base64Image,
+        createdAt: new Date(),
+      });
+
+      console.log("Successfully saved dog with ID:", docRef.id);
+      Alert.alert("Success", "Dog information saved successfully!", [
+        { text: "OK", onPress: () => navigation.navigate("MainTabs") },
+      ]);
+    } catch (error) {
+      console.error("Firestore saving error:", error);
+      Alert.alert("Error", `Failed to save dog information: ${error.message}`);
+    }
+  };
+
   return (
-    <KeyboardAvoidingView style={styles.outerContainer} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView 
+      style={styles.outerContainer} 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      
       <Text style={styles.pageTitle}>Add Dog</Text>
+      
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}>
           <View style={styles.container}>
-            {/* ✅ 이미지 선택 */}
+
             <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
               {image ? <Image source={{ uri: image }} style={styles.image} /> : <Text style={styles.imagePlaceholder}>+</Text>}
             </TouchableOpacity>
 
-            {/* ✅ 입력 필드 */}
             <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={setName} />
 
-            {/* ✅ 품종 선택 */}
             <TouchableOpacity onPress={() => setShowPicker(!showPicker)} style={styles.input}>
               <Text>{breed || "Select Breed"}</Text>
             </TouchableOpacity>
+            
             {showPicker && (
               <View style={styles.pickerContainer}>
                 <Picker selectedValue={breed} onValueChange={(value) => { setBreed(value); setShowPicker(false); }} style={styles.picker}>
@@ -160,7 +174,6 @@ const AddDogPage = () => {
             <TextInput style={styles.input} placeholder="Year old" value={age} onChangeText={setAge} keyboardType="numeric" />
             <TextInput style={styles.input} placeholder="Weight (lbs)" value={weight} onChangeText={setWeight} keyboardType="numeric" />
 
-            {/* ✅ 성별 선택 버튼 */}
             <View style={styles.genderContainer}>
               <TouchableOpacity style={[styles.genderButton, gender === "male" ? styles.genderSelected : null]} onPress={() => setGender("male")}>
                 <Text style={[styles.genderText, gender === "male" ? styles.genderTextSelected : null]}>Male</Text>
@@ -171,7 +184,6 @@ const AddDogPage = () => {
               </TouchableOpacity>
             </View>
 
-            {/* ✅ 저장 버튼 */}
             <TouchableOpacity style={styles.saveButton} onPress={saveDogInfo}>
               <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>
@@ -197,7 +209,7 @@ const styles = StyleSheet.create({
   scrollContainer: { 
     flexGrow: 1,
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     paddingTop: 40,
   },
   container: { 
@@ -213,7 +225,7 @@ const styles = StyleSheet.create({
     alignSelf: "center", 
     width: 150, 
     height: 150, 
-    borderRadius: 100, 
+    borderRadius: 75, 
     backgroundColor: "rgb(210,206,187)", 
     justifyContent: "center", 
     alignItems: "center", 
@@ -222,20 +234,25 @@ const styles = StyleSheet.create({
   image: { 
     width: 150, 
     height: 150, 
-    borderRadius: 50,
+    borderRadius: 75,  
     marginTop: 30,
     marginBottom: 30,
+  },
+  imagePlaceholder: { 
+    fontSize: 50,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
   },
   input: { 
     height: 50, 
     borderWidth: 1, 
     borderColor: "rgb(238,117,11)", 
-    borderRadius: 5, 
+    borderRadius: 50, 
     paddingHorizontal: 10, 
     backgroundColor: "white", 
     justifyContent: "center", 
     marginTop: 10,
-    borderRadius: 50,
     marginBottom: 10 
   },
   genderContainer: { 
@@ -257,24 +274,23 @@ const styles = StyleSheet.create({
   },
   genderButton: { 
     padding: 10, 
-    borderRadius: 5, 
+    borderRadius: 25, 
     borderWidth: 1, 
-    borderRadius: 25,
     borderColor: "rgb(238,117,11)", 
     width: "40%", 
     alignItems: "center" 
   },
   mainPageButton: { 
-    backgroundColor: "white", // ✅ 버튼 배경 흰색
+    backgroundColor: "white", 
     padding: 12, 
     borderRadius: 25, 
     alignItems: "center", 
-    marginTop: 10, // ✅ "Save" 버튼과 간격 조절
-    borderWidth: 2, // ✅ 테두리 추가
-    borderColor: "rgb(238,117,11)", // ✅ 주황색 테두리
+    marginTop: 10,
+    borderWidth: 2, 
+    borderColor: "rgb(238,117,11)", 
   },
   mainPageButtonText: { 
-    color: "rgb(238,117,11)", // ✅ 텍스트 색상 주황색
+    color: "rgb(238,117,11)", 
     fontSize: 16, 
     fontWeight: "bold" 
   },
@@ -283,7 +299,7 @@ const styles = StyleSheet.create({
     borderColor: "rgb(238,117,11)" 
   },
   genderText: { 
-    color: "#rgb(238,117,11)" 
+    color: "rgb(238,117,11)"  
   },
   genderTextSelected: { 
     color: "#fff" 
@@ -294,9 +310,9 @@ const styles = StyleSheet.create({
     color: "white", 
     textAlign: "center", 
     marginTop: 20, 
-    marginBottom:5
+    marginBottom: 5
   },
-  
 });
+
 
 export default AddDogPage;

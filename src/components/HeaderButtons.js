@@ -1,16 +1,18 @@
 import React, { useContext } from "react";
 import { View, Button, StyleSheet } from "react-native";
-import { AuthContext } from "../../AuthContext"; // ✅ AuthContext 가져오기
+import { AuthContext } from "../../AuthContext"; 
 
 const HeaderButtons = ({ navigation }) => {
-  const { isLoggedIn, handleLogout } = useContext(AuthContext); // ✅ 전역 로그인 상태 가져오기
+  const { isLoggedIn, handleLogout } = useContext(AuthContext);
 
   const handleLoginPress = () => {
     if (isLoggedIn) {
-      handleLogout(); // ✅ 로그아웃 시 AuthContext에서 상태 업데이트
-      navigation.reset({ index: 0, routes: [{ name: "Login" }] }); // ✅ 로그인 페이지로 이동
-    } else {
-      navigation.navigate("Login"); // ✅ 로그인 페이지로 이동
+      handleLogout(); 
+      navigation.reset({ index: 0, routes: [{ name: "Login" }] }); 
+    } 
+    else 
+    {
+      navigation.navigate("Login"); 
     }
   };
 
@@ -19,7 +21,7 @@ const HeaderButtons = ({ navigation }) => {
       <Button 
         title={isLoggedIn ? "Sign out" : "Sign in"} 
         onPress={handleLoginPress} 
-        color="rgb(238,117,11)" // ✅ 주황색 적용
+        color="rgb(238,117,11)" 
       />
     </View>
   );

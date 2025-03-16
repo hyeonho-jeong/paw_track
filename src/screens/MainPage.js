@@ -14,7 +14,8 @@ const MainPage = () => {
   const [dogInfo, setDogInfo] = useState([]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) 
+      return;
 
     const dogsCollectionRef = collection(db, "users", user.uid, "dogs");
 
@@ -41,9 +42,11 @@ const MainPage = () => {
             try {
               const dogRef = doc(db, "users", user.uid, "dogs", dogId);
               await deleteDoc(dogRef);
-              console.log(`✅ Dog ${dogId} deleted successfully!`);
-            } catch (error) {
-              console.error("🚨 Error deleting dog:", error);
+              console.log(`Dog ${dogId} deleted successfully!`);
+            } 
+            catch (error) 
+            {
+              console.error("Error deleting dog:", error);
               Alert.alert("Error", "An error occurred while deleting the dog.");
             }
           },
@@ -62,6 +65,7 @@ const MainPage = () => {
             <HeaderButtons navigation={navigation} />
             {dogInfo.map((dog) => (
               <View key={dog.id} style={styles.dogItem}>
+                
                 <TouchableOpacity 
                   style={styles.dogInfo} 
                   onPress={() => navigation.navigate("DogDetail", { dog })}
@@ -82,6 +86,7 @@ const MainPage = () => {
                 >
                   <Text style={styles.deleteButtonText}>Delete</Text>
                 </TouchableOpacity>
+                
               </View>
             ))}
           </ScrollView>
@@ -105,7 +110,7 @@ const styles = StyleSheet.create({
   title: { 
     fontSize: 24, 
     fontWeight: "bold", 
-    marginBottom: 20, // ✅ Dog List 제목과 리스트 사이 간격 추가
+    marginBottom: 20, 
     textAlign: "center",
     color: "white",
   },
@@ -114,7 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderRadius: 10,
-    marginTop: 10, // ✅ Dog List 제목과 리스트 사이 간격 추가
+    marginTop: 10, 
   },
   scrollView: {
     backgroundColor: "white",
