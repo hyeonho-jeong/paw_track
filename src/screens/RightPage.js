@@ -226,11 +226,11 @@ const styles = StyleSheet.create({
   },
   statsText: {
     fontSize: 14,
-    color: "#333",
+    color: "rgb(51,51,51)",
   },
   username: {
     fontSize: 14,
-    color: "#666",
+    color: "rgb(102,102,102)",
   },
   rankingItem: {
     flexDirection: "row",
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 15,
     marginVertical: 5,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "rgb(238,117,11)",
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 14,
-    color: "#666",
+    color: "rgb(102,102,102)",
     textAlign: "right",
     fontWeight: "bold",
     color: "black",

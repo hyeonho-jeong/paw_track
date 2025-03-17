@@ -60,6 +60,7 @@ const MainPage = () => {
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.container}>
         <Text style={styles.title}>Dog List</Text>
+        
         <View style={styles.dogListContainer}> 
           <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
             <HeaderButtons navigation={navigation} />

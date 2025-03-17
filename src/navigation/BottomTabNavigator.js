@@ -33,6 +33,8 @@ const BottomTabNavigator = () => {
         {{
           headerShown: false,
           tabBarStyle: { position: "absolute", height: 60 }, 
+          tabBarActiveTintColor: "rgb(240,82,34)", 
+          tabBarInactiveTintColor: "rgb(210,206,187)",
         }}
       >
         <Tab.Screen name="History" component={LeftPage} />

@@ -15,7 +15,7 @@ function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="MainTabs">
         <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
-        <Stack.Screen name="Signup" component={SignUpPage} options={{ headerShown: true, title: "Sign Up" }} />
+        <Stack.Screen name="Signup" component={SignUpPage} options={{ headerShown: false}} />
         <Stack.Screen name="MainTabs" component={BottomTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="AddDogPage" component={AddDogPage} options={{ headerShown: false}} />
         <Stack.Screen name="DogDetail" component={DogDetailPage} options={{ headerShown: false}}/>

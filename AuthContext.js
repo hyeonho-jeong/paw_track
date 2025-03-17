@@ -17,14 +17,6 @@ export const AuthProvider = ({ children }) => {
     }
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("Login status change detected:", currentUser);
-
-      if (currentUser) {
-        console.log("logged-in users:", currentUser.uid);
-      } else {
-        console.log("No logged-in user.");
-      }
-
       setUser(currentUser);
       setIsLoggedIn(!!currentUser);
       setLoading(false);

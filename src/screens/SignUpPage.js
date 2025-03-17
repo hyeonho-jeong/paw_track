@@ -99,6 +99,13 @@ const SignupPage = ({ navigation }) => {
                 <Text style={styles.signupButtonText}>Sign Up</Text>
               )}
             </TouchableOpacity>
+
+            <TouchableOpacity 
+                          style={styles.mainPageButton} 
+                          onPress={() => navigation.navigate("MainTabs")}
+                        >
+                          <Text style={styles.mainPageButtonText}>Go to MainPage</Text>
+                        </TouchableOpacity>
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
@@ -112,7 +119,7 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
@@ -149,6 +156,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  mainPageButton: { 
+    backgroundColor: "white", 
+    padding: 12, 
+    borderRadius: 10, 
+    borderRadius: 25,
+    alignItems: "center", 
+    marginTop: 10, 
+    borderWidth: 2, 
+    borderColor: "rgb(238,117,11)",
+  },
+  mainPageButtonText: { 
+    color: "rgb(238,117,11)", 
+    fontSize: 16, 
+    fontWeight: "bold" 
   },
 });
 
