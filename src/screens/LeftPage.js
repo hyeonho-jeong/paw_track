@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { 
   View, Text, StyleSheet, KeyboardAvoidingView, 
-  TouchableWithoutFeedback, Keyboard, Platform, Image, FlatList
+  TouchableWithoutFeedback, Keyboard, Platform, Image, FlatList, ScrollView
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import { AuthContext } from "../../AuthContext";
-import HeaderButtons from "../components/HeaderButtons";
 
 const LeftPage = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -67,61 +66,56 @@ const LeftPage = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.safeContainer}>
-          <Text style={styles.title}>Dog History</Text>
-
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={styles.safeContainer}>
+            <Text style={styles.title}>Dog History</Text>
+            
             <View style={styles.container}>
-              
-              <HeaderButtons navigation={navigation} />
+              <Calendar
+                onDayPress={(day) => {
+                  setSelectedDate(day.dateString);
+                  fetchActivityData(day.dateString);
+                }}
+                markedDates={{
+                  [selectedDate]: { selected: true, selectedColor: "rgb(40,167,69)" },
+                }}
+                theme={{
+                  selectedDayBackgroundColor: "rgb(40,167,69)",
+                  todayTextColor: "rgb(255,69,0)",
+                }}
+                style={styles.calendar}
+              />
 
-                <Calendar
-                  onDayPress={(day) => {
-                    setSelectedDate(day.dateString);
-                    fetchActivityData(day.dateString);
-                  }}
-                  markedDates={{
-                    [selectedDate]: { selected: true, selectedColor: "rgb(40,167,69)" },
-                  }}
-                  theme={{
-                    selectedDayBackgroundColor: "rgb(40,167,69)",
-                    todayTextColor: "rgb(255,69,0)",
-                  }}
-                  style={styles.calendar}
-                />
+              <Text style={styles.dateTitle}>
+                {selectedDate ? `Activity Record on ${selectedDate}` : "Select a Date"}
+              </Text>
 
-            <Text style={styles.dateTitle}>
-              {selectedDate ? `Activity Record on ${selectedDate}` : "Select a Date"}
-            </Text>
-
-            <FlatList
-              data={activityData}
-              keyExtractor={(item) => item.id}
-              
-              renderItem={({ item }) => (
-                <View style={styles.activityItem}>
-                  {item.image ? (
-                    <Image source={{ uri: item.image }} style={styles.activityImage} />
-                  ) : (
-                    <Text style={styles.defaultIcon}>🐾</Text>
-                  )}
-
-                  <View style={styles.activityDetails}>
-                    <Text style={styles.activityText}> {item.dogName}</Text>
-                    <Text style={styles.activityText}> Recorded Date: {item.localDate}</Text>
-                    <Text style={styles.activityText}> Walk Time: {item.walkedTime} min</Text>
-                    <Text style={styles.activityText}> Steps Taken: {item.steps}</Text>
+              <FlatList
+                data={activityData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <View style={styles.activityItem}>
+                    {item.image ? (
+                      <Image source={{ uri: item.image }} style={styles.activityImage} />
+                    ) : (
+                      <Text style={styles.defaultIcon}>🐾</Text>
+                    )}
+                    <View style={styles.activityDetails}>
+                      <Text style={styles.activityText}> {item.dogName}</Text>
+                      <Text style={styles.activityText}> Recorded Date: {item.localDate}</Text>
+                      <Text style={styles.activityText}> Walk Time: {item.walkedTime} min</Text>
+                      <Text style={styles.activityText}> Steps Taken: {item.steps}</Text>
+                    </View>
                   </View>
-                </View>
-              )}
-
-              ListEmptyComponent={<Text style={styles.noDataText}> No activity recorded on the selected date.</Text>}
-              
-              contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-              keyboardShouldPersistTaps="handled"
-              nestedScrollEnabled={true}
-            />
+                )}
+                ListEmptyComponent={<Text style={styles.noDataText}> No activity recorded on the selected date.</Text>}
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+                keyboardShouldPersistTaps="handled"
+                nestedScrollEnabled={true} 
+              />
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );

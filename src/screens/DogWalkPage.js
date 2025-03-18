@@ -1,11 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
+import * as Notifications from "expo-notifications"; 
 
 const dogBreeds = require("../../assets/dogBreeds.json");
 
 const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [trackedPercentages, setTrackedPercentages] = useState(new Set()); 
   const timerRef = useRef(null);
   const progressAnim = useRef(new Animated.Value(0)).current; 
 
@@ -18,44 +20,59 @@ const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
       (item) => item.Breed.toLowerCase() === dogInfo.breed.toLowerCase()
     );
 
-    if (!breedData)  
-      return "Unknown";
+    if (!breedData) return 20; 
 
     const age = Number(dogInfo.age);
     
-    if (age < Number(breedData.Puppy_Age)) 
-      {
-      return Number(breedData["Puppy_Walk_Time(Min)"]);
-    } 
-    else if (age <= Number(breedData.Adult_Age)) {
-      return Number(breedData["Adult_Walk_Time(Min)"]);
-    } 
-    else {
-      return Number(breedData["Senior_Walk_Time(Min)"]);
-    }
+    if (age < Number(breedData.Puppy_Age)) return Number(breedData["Puppy_Walk_Time(Min)"]);
+    else if (age <= Number(breedData.Adult_Age)) return Number(breedData["Adult_Walk_Time(Min)"]);
+    else return Number(breedData["Senior_Walk_Time(Min)"]);
   };
 
   const totalWalkTime = getWalkTime() * 60;
+
+  const sendLocalNotification = async (percentage) => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Notification",
+        body: `You are ${percentage}% finished total walk.`,
+        sound: true,
+      },
+      trigger: null, 
+    });
+  };
+
+
+  useEffect(() => {
+    const percentages = [10, 30, 50, 70, 100]; 
+
+    percentages.forEach((percent) => {
+      const threshold = Math.floor(totalWalkTime * (percent / 100));
+      if (elapsedTime >= threshold && !trackedPercentages.has(percent)) {
+        sendLocalNotification(percent);
+        setTrackedPercentages((prev) => new Set(prev).add(percent));
+      }
+    });
+  }, [elapsedTime]); 
+
+  useEffect(() => {
+    const progress = (elapsedTime / totalWalkTime) * 100;
+
+    Animated.timing(progressAnim, {
+      toValue: progress, 
+      duration: 500, 
+      useNativeDriver: false,
+    }).start();
+  }, [elapsedTime]); 
 
   const toggleTimer = () => {
     if (isRunning) {
       clearInterval(timerRef.current);
       setIsRunning(false);
-    } 
-    else {
+    } else {
       const startTime = Date.now() - elapsedTime * 1000;
-      
       timerRef.current = setInterval(() => {
-        const newElapsedTime = Math.floor((Date.now() - startTime) / 1000);
-        setElapsedTime(newElapsedTime);
-        onTimeUpdate(newElapsedTime);
-
-        const progress = Math.min((newElapsedTime / totalWalkTime) * 100, 100);
-        Animated.timing(progressAnim, {
-          toValue: progress,
-          duration: 500,
-          useNativeDriver: false,
-        }).start();
+        setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
       }, 1000);
       setIsRunning(true);
     }
@@ -65,6 +82,7 @@ const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
     clearInterval(timerRef.current);
     setElapsedTime(0);
     setIsRunning(false);
+    setTrackedPercentages(new Set()); 
 
     Animated.timing(progressAnim, {
       toValue: 0,
@@ -120,12 +138,7 @@ const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
-  },
+  container: { flex: 1, justifyContent: "center", alignItems: "center", marginTop: 10 },
   card: {
     backgroundColor: "white",
     paddingVertical: 20,
@@ -140,14 +153,8 @@ const styles = StyleSheet.create({
     elevation: 3,
     width: "100%",
   },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  buttonContainer: {
-    alignItems: "flex-end",
-  },
+  row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  buttonContainer: { alignItems: "flex-end" },
   circleButton: {
     borderRadius: 50,
     backgroundColor: "rgb(247,204,73)",
@@ -184,11 +191,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     justifyContent: "center",
   },
-  progressBar: {
-    height: "100%",
-    backgroundColor: "rgb(120,190,252)",
-    borderRadius: 15,
-  },
+  progressBar: { height: "100%", backgroundColor: "rgb(120,190,252)", borderRadius: 15 },
   progressText: {
     position: "absolute",
     width: "100%",
@@ -197,15 +200,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-  infoContainer: {
-    flex: 1,
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "left",
-    marginBottom: 5,
-  },
+  infoContainer: { flex: 1 },
+  text: { fontSize: 16, fontWeight: "bold", textAlign: "left", marginBottom: 5 },
 });
 
 export default DogWalkPage;
