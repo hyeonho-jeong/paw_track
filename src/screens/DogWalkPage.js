@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
 import * as Notifications from "expo-notifications"; 
 
+
+
 const dogBreeds = require("../../assets/dogBreeds.json");
 
 const DogWalkPage = ({ dogInfo, onTimeUpdate }) => {
